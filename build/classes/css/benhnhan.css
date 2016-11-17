@@ -1,0 +1,48 @@
+#menu{
+    -fx-background-color:#000000;
+}
+#bdmenu{
+    -fx-background-color:#AAF200;
+}
+.label-menu,#DanhSachBenhNhan{
+    -fx-text-fill: White;
+    -fx-font-size:13px;
+    -fx-cursor:HAND;
+    -fx-underline:false;
+    -fx-wrap-text:false;
+}
+.label-menu:hover, #DanhSachBenhNhan:hover{
+    -fx-text-fill: #FF8000;
+    -fx-font-style: italic;
+}
+#BenhNhan{
+    -fx-text-fill:#AAF200;
+    -fx-font-style: italic;
+}
+#DanhSachBenhNhan{
+    -fx-font-size:14px;
+}
+#QuanLyBenhNhan{
+    -fx-font-size:20px;
+    -fx-font-family:"Arial Black";
+    -fx-font-weight:bold;
+    -fx-fill: #000000;
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.5) , 10, 0.0 , 0 , 2 );
+}
+
+#txtThemBN, #txtTimKiem{
+    -fx-font-weight:bold;
+    -fx-font-family:"Arial";
+    -fx-cursor:HAND;
+}
+.icon,.stk,#AddGroup{
+    -fx-cursor:HAND;
+}
+.rec{
+    -fx-fill:  #FFCF75;
+}
+#group,#AddGroup,.txt{
+    -fx-font-weight:bold;
+    -fx-font-family:"Tahoma";
+    -fx-font-size:12px;
+}
