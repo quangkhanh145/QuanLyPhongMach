@@ -15,6 +15,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -29,15 +30,12 @@ public class BenhNhan extends Scene{
     static BorderPane border = new BorderPane();
     public  BenhNhan()
     {
-        super(border);
-        Hyperlink TrangChu = new Hyperlink("Trang chủ");
+        super(border);      
+        Label TrangChu = new Label("Trang chủ");
         TrangChu.getStyleClass().add("label-menu");
-        TrangChu.setOnAction(new EventHandler<ActionEvent>()      
+        TrangChu.setOnMouseClicked(e->
         {
-            public void handle(ActionEvent e)
-            {
-                //QuanLyPhongMach.getstage().setScene(hp);
-            }
+            SceneController.setHomePagePanel();
         });
         Label BenhNhan = new Label("Bệnh nhân");
         BenhNhan.setId("BenhNhan");
@@ -86,6 +84,7 @@ public class BenhNhan extends Scene{
         iconThemBenhNhan.setFill(Color.web("#FFCF75"));
         Text txtThemBN = new Text("+ Thêm bệnh nhân");
         txtThemBN.setId("txtThemBN");
+        
         StackPane stackThemBN = new StackPane();
         stackThemBN.getChildren().addAll(iconThemBenhNhan, txtThemBN);
         stackThemBN.setAlignment(Pos.CENTER_RIGHT);

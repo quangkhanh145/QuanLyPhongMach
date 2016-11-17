@@ -23,8 +23,7 @@ public class HomePage extends Scene{
     static BorderPane border = new BorderPane();
     public HomePage()
     {
-        super(border);
-        BenhNhan bn = new BenhNhan();
+        super(border,514,445);
         ImageView img_BenhNhan = new ImageView("/images/medical_black.png");
         Button BenhNhan = new Button("Bệnh nhân", img_BenhNhan);
         BenhNhan.setOnAction(new EventHandler<ActionEvent>()
@@ -32,8 +31,7 @@ public class HomePage extends Scene{
             @Override
             public void handle(ActionEvent e)
             {
-                QuanLyPhongMach.getstage().setScene(bn);
-                
+                SceneController.setBenhNhanPanel();
             }
         });
         
