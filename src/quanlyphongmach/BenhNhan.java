@@ -85,8 +85,14 @@ public class BenhNhan extends Scene{
         Text QuanLyBenhNhan = new Text("Quản lý bệnh nhân");
         QuanLyBenhNhan.setId("QuanLyBenhNhan");
         TextField tfTimKiem = new TextField();
+        tfTimKiem.setPromptText("Nhập từ khoá");
+        tfTimKiem.setFocusTraversable(false);
         DatePicker fromDay = new DatePicker();
+        fromDay.setPromptText("Từ ngày");
+        fromDay.setFocusTraversable(false);
         DatePicker toDay = new DatePicker();
+        toDay.setPromptText("Đến ngày");
+        toDay.setFocusTraversable(false);
         
         Rectangle iconTimKiem = new Rectangle(50,30);
         iconTimKiem.getStyleClass().add("icon");

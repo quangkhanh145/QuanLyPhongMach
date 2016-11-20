@@ -81,8 +81,14 @@ public class HoaDon extends Scene{
         Text txtDanhSachHoaDon = new Text("Danh sách hoá đơn");
         txtDanhSachHoaDon.setId("txtDanhSachHoaDon");
         TextField tfTimKiem = new TextField();
+        tfTimKiem.setPromptText("Nhập từ khoá");
+        tfTimKiem.setFocusTraversable(false);
         DatePicker fromDay = new DatePicker();
+        fromDay.setPromptText("Từ ngày");
+        fromDay.setFocusTraversable(false);
         DatePicker toDay = new DatePicker();
+        toDay.setPromptText("Đến ngày");
+        toDay.setFocusTraversable(false);
         
         Rectangle iconTimKiem = new Rectangle(50,30);
         iconTimKiem.getStyleClass().add("icon");

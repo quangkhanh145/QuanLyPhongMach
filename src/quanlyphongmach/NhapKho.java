@@ -118,8 +118,14 @@ public class NhapKho extends Scene{
         Text DanhSachNhapKho = new Text("Danh sách nhập kho");
         DanhSachNhapKho.getStyleClass().add("label-submenu");
         TextField tfTimKiem = new TextField();
+        tfTimKiem.setPromptText("Nhập từ khoá");
+        tfTimKiem.setFocusTraversable(false);
         DatePicker fromDay = new DatePicker();
+        fromDay.setPromptText("Từ ngày");
+        fromDay.setFocusTraversable(false);
         DatePicker toDay = new DatePicker();
+        toDay.setPromptText("Đến ngày");
+        toDay.setFocusTraversable(false);
         
         Rectangle iconTimKiem = new Rectangle(50,30);
         iconTimKiem.getStyleClass().add("icon");
@@ -183,7 +189,8 @@ public class NhapKho extends Scene{
         Text QLNhaCungCap = new Text("Quản lý nhà cung cấp");
         QLNhaCungCap.getStyleClass().add("label-submenu");
         TextField tfTimKiem = new TextField();
-        
+        tfTimKiem.setPromptText("Nhập từ khoá");
+        tfTimKiem.setFocusTraversable(false);
         Rectangle iconTimKiem = new Rectangle(50,30);
         iconTimKiem.getStyleClass().add("icon");
         iconTimKiem.setFill(Color.web("#FFCF75"));

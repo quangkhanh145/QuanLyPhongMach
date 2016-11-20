@@ -123,7 +123,8 @@ public class Thuoc extends Scene{
         Text DanhSachThuoc = new Text("Danh sách thuốc");
         DanhSachThuoc.getStyleClass().add("label-submenu");
         TextField tfTimKiem = new TextField();
-                
+        tfTimKiem.setPromptText("Nhập từ khoá");
+        tfTimKiem.setFocusTraversable(false);        
         Rectangle iconTimKiem = new Rectangle(50,30);
         iconTimKiem.getStyleClass().add("icon");
         iconTimKiem.setFill(Color.web("#FFCF75"));
@@ -162,7 +163,8 @@ public class Thuoc extends Scene{
         Text DanhSachDichVu = new Text("Dịch vụ");
         DanhSachDichVu.getStyleClass().add("label-submenu");
         TextField tfTimKiem = new TextField();
-                
+        tfTimKiem.setPromptText("Nhập từ khoá");  
+        tfTimKiem.setFocusTraversable(false);
         Rectangle iconTimKiem = new Rectangle(50,30);
         iconTimKiem.getStyleClass().add("icon");
         iconTimKiem.setFill(Color.web("#FFCF75"));
@@ -201,7 +203,8 @@ public class Thuoc extends Scene{
         Text DanhSachVatTu = new Text("Danh sách vật tư y tế");
         DanhSachVatTu.getStyleClass().add("label-submenu");
         TextField tfTimKiem = new TextField();
-                
+        tfTimKiem.setPromptText("Nhập từ khoá");
+        tfTimKiem.setFocusTraversable(false);        
         Rectangle iconTimKiem = new Rectangle(50,30);
         iconTimKiem.getStyleClass().add("icon");
         iconTimKiem.setFill(Color.web("#FFCF75"));

@@ -37,7 +37,11 @@ public class DangNhap extends Scene{
         Label lb_user = new Label("Username: ");
         Label lb_pass = new Label("Password: ");
         TextField tf_user = new TextField();
+        tf_user.setPromptText("Tên đăng nhập");
+        tf_user.setFocusTraversable(false);
         PasswordField pf_pass = new PasswordField();
+        pf_pass.setPromptText("Mật khẩu");
+        pf_pass.setFocusTraversable(false);
         Text checkLogin = new Text();
         checkLogin.setId("checklogin");
         

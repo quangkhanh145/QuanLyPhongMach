@@ -1,0 +1,47 @@
+#menu{
+    -fx-background-color:#000000;
+}
+#bdmenu{
+    -fx-background-color:#AAF200;
+}
+.label-menu,.menu2{
+    -fx-text-fill: White;
+    -fx-font-size:13px;
+    -fx-cursor:HAND;
+    -fx-underline:false;
+    -fx-wrap-text:false;
+}
+.menu2{
+    -fx-font-size:13px;
+    -fx-font-weight:bold;
+    -fx-padding: 5,0,0,0;
+}
+.label-menu:hover, .menu2:hover{
+    -fx-text-fill: #FF8000;
+    -fx-font-style: italic;
+}
+#donthuoc{
+    -fx-text-fill:#AAF200;
+    -fx-font-style: italic;
+}
+#lbDanhSachToaThuoc{
+    -fx-font-size:14px;
+}
+#txtDanhSachToaThuoc{
+    -fx-font-size:20px;
+    -fx-font-family:"Arial Black";
+    -fx-font-weight:bold;
+    -fx-fill: #000000;
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.5) , 10, 0.0 , 0 , 2 );
+}
+
+#txtTimKiem{
+    -fx-font-weight:bold;
+    -fx-font-family:"Arial";
+}
+.rec{
+    -fx-fill:  #FFCF75;
+}
+.icon:hover{
+    -fx-cursor:HAND;
+}
