@@ -35,10 +35,11 @@ public class QuanLyPhongMach extends Application {
     public void start(Stage primaryStage) {
         
         window = primaryStage;
-        primaryStage.setTitle("Quản lý phòng mạch");
-        primaryStage.setResizable(true);
+        window.setTitle("Quản lý phòng mạch");
+        window.setResizable(true);
         SceneController.setDangNhapPanel();
-        primaryStage.show();
+        window.sizeToScene();
+        window.show();
     }
     
     public static Stage getstage()

@@ -12,6 +12,7 @@
 }
 .button:hover{
     -fx-background-color: linear-gradient(#FF8000, #FFCF75);
+    -fx-cursor:HAND;
 }
 #welcome{
     -fx-font-size: 15px;
@@ -28,6 +29,7 @@
     -fx-fill:#FF8000;
     -fx-underline: true;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-cursor:HAND;
 }
 #header{
     -fx-background-color:#000000;

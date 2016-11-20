@@ -6,7 +6,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,7 +14,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -27,7 +25,7 @@ import javafx.scene.text.Text;
  * @author Quang Khanh
  */
 public class BenhNhan extends Scene{
-    static BorderPane border = new BorderPane();
+    private static BorderPane border = new BorderPane();
     public  BenhNhan()
     {
         super(border);      
@@ -42,10 +40,22 @@ public class BenhNhan extends Scene{
         BenhNhan.getStyleClass().add("label-menu");
         Label DonThuoc= new Label("Đơn thuốc");
         DonThuoc.getStyleClass().add("label-menu");
+        DonThuoc.setOnMouseClicked(e->
+        {
+            SceneController.setDonThuocPanel();
+        });
         Label HoaDon = new Label("Hoá đơn");
         HoaDon.getStyleClass().add("label-menu");
+        HoaDon.setOnMouseClicked(e->
+        {
+            SceneController.setHoaDonPanel();
+        });
         Label Thuoc = new Label("Thuốc");
         Thuoc.getStyleClass().add("label-menu");
+        Thuoc.setOnMouseClicked(e->
+        {
+            SceneController.setThuocPanel();
+        });
         Label NhapKho = new Label("Nhập kho");
         NhapKho.getStyleClass().add("label-menu");
         Label BaoCao = new Label("Báo cáo");
@@ -63,7 +73,7 @@ public class BenhNhan extends Scene{
         Bdmenu.setId("bdmenu");
         
         Label DanhSachBenhNhan = new Label("Danh sách bệnh nhân");
-        DanhSachBenhNhan.setId("DanhSachBenhNhan");
+        DanhSachBenhNhan.getStyleClass().add("menu2");
         DanhSachBenhNhan.setAlignment(Pos.TOP_LEFT);
         
         Text QuanLyBenhNhan = new Text("Quản lý bệnh nhân");
@@ -76,13 +86,15 @@ public class BenhNhan extends Scene{
         iconTimKiem.getStyleClass().add("icon");
         iconTimKiem.setFill(Color.web("#FFCF75"));
         Text txtTimKiem = new Text("Tìm");
+        txtTimKiem.setMouseTransparent(true);
         txtTimKiem.setId("txtTimKiem");
         txtTimKiem.setFill(Color.BLACK);
         
-        Rectangle iconThemBenhNhan = new Rectangle(112,30);
+        Rectangle iconThemBenhNhan = new Rectangle(120,30);
         iconThemBenhNhan.getStyleClass().add("icon");
         iconThemBenhNhan.setFill(Color.web("#FFCF75"));
         Text txtThemBN = new Text("+ Thêm bệnh nhân");
+        txtThemBN.setMouseTransparent(true);
         txtThemBN.setId("txtThemBN");
         
         StackPane stackThemBN = new StackPane();
@@ -116,6 +128,7 @@ public class BenhNhan extends Scene{
         Rectangle rec1 = new Rectangle(250,30);
         rec1.getStyleClass().add("rec");
         Text txt1 = new Text("Tất cả");
+        txt1.setMouseTransparent(true);
         txt1.getStyleClass().add("txt");
         StackPane stk1 = new StackPane();
         stk1.getStyleClass().add("stk");
@@ -155,9 +168,12 @@ public class BenhNhan extends Scene{
         TableColumn ngaylapCol = new TableColumn("Ngày lập");
         ngaylapCol.setPrefWidth(120);
         ngaylapCol.setResizable(true);
+        TableColumn chucNangCol = new TableColumn("Chức năng");
+        chucNangCol.setPrefWidth(80);
+        chucNangCol.setResizable(true);
         
         tbDanhSachBN.getColumns().addAll(maCol, tenCol, gioitinhCol, tuoiCol, cannangCol, 
-                dienthoaiCol, diachiCol, nhomCol, ngaylapCol);
+                dienthoaiCol, diachiCol, nhomCol, ngaylapCol, chucNangCol);
         VBox table = new VBox(10);
         table.setPadding(new Insets(15, 10, 15, 20));
         table.getChildren().add(tbDanhSachBN);

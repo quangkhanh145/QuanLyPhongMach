@@ -4,16 +4,21 @@
 #bdmenu{
     -fx-background-color:#AAF200;
 }
-.label-menu,#DanhSachBenhNhan{
+.label-menu,.menu2{
     -fx-text-fill: White;
     -fx-font-size:13px;
-    -fx-cursor:HAND;
     -fx-underline:false;
     -fx-wrap-text:false;
 }
-.label-menu:hover, #DanhSachBenhNhan:hover{
+.menu2{
+    -fx-font-size:13px;
+    -fx-font-weight:bold;
+    -fx-padding: 5,0,0,0;
+}
+.label-menu:hover, .menu2:hover{
     -fx-text-fill: #FF8000;
     -fx-font-style: italic;
+    -fx-cursor:HAND;
 }
 #BenhNhan{
     -fx-text-fill:#AAF200;
@@ -33,16 +38,20 @@
 #txtThemBN, #txtTimKiem{
     -fx-font-weight:bold;
     -fx-font-family:"Arial";
-    -fx-cursor:HAND;
 }
-.icon,.stk,#AddGroup{
+.icon:hover,#AddGroup:hover{
     -fx-cursor:HAND;
 }
 .rec{
     -fx-fill:  #FFCF75;
+}
+.rec:hover{
+    -fx-fill:#FF8000;
+    -fx-cursor:HAND;
 }
 #group,#AddGroup,.txt{
     -fx-font-weight:bold;
     -fx-font-family:"Tahoma";
     -fx-font-size:12px;
 }
+
