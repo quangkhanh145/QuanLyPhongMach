@@ -43,9 +43,17 @@ public class HomePage extends Scene{
         
         ImageView img_Thuoc = new ImageView("/images/pills5.png");
         Button Thuoc = new Button("Thuốc", img_Thuoc);
+        Thuoc.setOnAction(e->
+        {
+            SceneController.setThuocPanel();
+        });
         
         ImageView img_QuanLyKho = new ImageView("/images/icon-rate.png");
         Button QuanLyKho = new Button("Quản lý kho", img_QuanLyKho);
+        QuanLyKho.setOnAction(e->
+        {
+            SceneController.setNhapKhoPanel();
+        });
         
         ImageView img_BaoCao = new ImageView("/images/icon-chart.png");
         Button BaoCao = new Button("Báo cáo",img_BaoCao);

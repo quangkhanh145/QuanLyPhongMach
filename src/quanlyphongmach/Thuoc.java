@@ -60,6 +60,10 @@ public class Thuoc extends Scene{
         Thuoc.getStyleClass().add("label-menu");
         Label NhapKho = new Label("Nhập kho");
         NhapKho.getStyleClass().add("label-menu");
+        NhapKho.setOnMouseClicked(e->
+        {
+            SceneController.setNhapKhoPanel();
+        });
         Label BaoCao = new Label("Báo cáo");
         BaoCao.getStyleClass().add("label-menu");
         Label CauHinh = new Label("Cấu hình");
@@ -385,14 +389,23 @@ public class Thuoc extends Scene{
         TableView tbThuoc = new TableView();
         tbThuoc.setEditable(false);
         TableColumn maSo = new TableColumn("Mã số");
+        maSo.setPrefWidth(100);
         TableColumn Ten = new TableColumn("Tên");
+        Ten.setPrefWidth(150);
         TableColumn donViTinh = new TableColumn("Đơn vị tính");
+        donViTinh.setPrefWidth(80);
         TableColumn giaBan = new TableColumn("Giá bán");
+        giaBan.setPrefWidth(100);
         TableColumn tonKho = new TableColumn("Tồn kho");
+        tonKho.setPrefWidth(80);
         TableColumn macDinhMoiNgay = new TableColumn("Mặc định mỗi ngày");
+        macDinhMoiNgay.setPrefWidth(60);
         TableColumn cachDung = new TableColumn("Cách dùng");
+        cachDung.setPrefWidth(150);
         TableColumn nhomThuoc = new TableColumn("Nhóm thuốc");
+        nhomThuoc.setPrefWidth(100);
         TableColumn chucNang = new TableColumn("Chức năng");   
+        chucNang.setPrefWidth(80);
         
         tbThuoc.getColumns().addAll(maSo, Ten, donViTinh, giaBan, tonKho,
                 macDinhMoiNgay, cachDung, nhomThuoc, chucNang);
@@ -407,13 +420,21 @@ public class Thuoc extends Scene{
         TableView tbDichVu = new TableView();
         tbDichVu.setEditable(false);
         TableColumn maSo = new TableColumn("Mã số");
+        maSo.setPrefWidth(80);
         TableColumn TenDV = new TableColumn("Tên dịch vụ");
+        TenDV.setPrefWidth(120);
         TableColumn donViTinh = new TableColumn("Đơn vị tính");
+        donViTinh.setPrefWidth(80);
         TableColumn donGia = new TableColumn("Đơn giá");
+        donGia.setPrefWidth(80);
         TableColumn soLuongMacDinh = new TableColumn("Số lượng mặc định");
+        soLuongMacDinh.setPrefWidth(120);
         TableColumn moTa = new TableColumn("Mô tả");
+        moTa.setPrefWidth(120);
         TableColumn nhom = new TableColumn("Nhóm");
-        TableColumn chucNang = new TableColumn("Chức năng");   
+        nhom.setPrefWidth(80);
+        TableColumn chucNang = new TableColumn("Chức năng");
+        chucNang.setPrefWidth(80);
         
         tbDichVu.getColumns().addAll(maSo, TenDV, donViTinh, donGia,
                 soLuongMacDinh, moTa, nhom, chucNang);
@@ -428,13 +449,21 @@ public class Thuoc extends Scene{
         TableView tbVatTu = new TableView();
         tbVatTu.setEditable(false);
         TableColumn maSo = new TableColumn("Mã số");
+        maSo.setPrefWidth(100);
         TableColumn TenVTYT = new TableColumn("Tên VTYT");
+        TenVTYT.setPrefWidth(150);
         TableColumn donViTinh = new TableColumn("Đơn vị tính");
+        donViTinh.setPrefWidth(80);
         TableColumn giaBan = new TableColumn("Giá bán");
+        giaBan.setPrefWidth(100);
         TableColumn giaNhap = new TableColumn("Giá nhập");
+        giaNhap.setPrefWidth(100);
         TableColumn tonKho = new TableColumn("Tồn kho");
+        tonKho.setPrefWidth(80);
         TableColumn nhom = new TableColumn("Nhóm");
-        TableColumn chucNang = new TableColumn("Chức năng");   
+        nhom.setPrefWidth(100);
+        TableColumn chucNang = new TableColumn("Chức năng"); 
+        chucNang.setPrefWidth(80);
         
         tbVatTu.getColumns().addAll(maSo, TenVTYT, donViTinh, giaBan,
                 giaNhap, tonKho, nhom, chucNang);

@@ -56,6 +56,10 @@ public class HoaDon extends Scene{
         Thuoc.getStyleClass().add("label-menu");
         Label NhapKho = new Label("Nhập kho");
         NhapKho.getStyleClass().add("label-menu");
+        NhapKho.setOnMouseClicked(e->
+        {
+            SceneController.setNhapKhoPanel();
+        });
         Label BaoCao = new Label("Báo cáo");
         BaoCao.getStyleClass().add("label-menu");
         Label CauHinh = new Label("Cấu hình");

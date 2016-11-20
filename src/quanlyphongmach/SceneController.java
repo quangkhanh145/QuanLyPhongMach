@@ -19,6 +19,7 @@ public class SceneController {
     private static final DonThuoc donthuoc = new DonThuoc();
     private static final HoaDon hoadon = new HoaDon();
     private static final Thuoc thuoc = new Thuoc();
+    private static final NhapKho nhapkho = new NhapKho();
     public SceneController()
     {
         
@@ -51,6 +52,11 @@ public class SceneController {
     public static void setThuocPanel()
     {
         QuanLyPhongMach.getstage().setScene(thuoc);
+        QuanLyPhongMach.getstage().setMaximized(true);
+    }
+    public static void setNhapKhoPanel()
+    {
+        QuanLyPhongMach.getstage().setScene(nhapkho);
         QuanLyPhongMach.getstage().setMaximized(true);
     }
 }

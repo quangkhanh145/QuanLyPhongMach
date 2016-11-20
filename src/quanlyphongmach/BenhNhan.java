@@ -7,6 +7,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -58,6 +60,10 @@ public class BenhNhan extends Scene{
         });
         Label NhapKho = new Label("Nhập kho");
         NhapKho.getStyleClass().add("label-menu");
+        NhapKho.setOnMouseClicked(e->
+        {
+            SceneController.setNhapKhoPanel();
+        });
         Label BaoCao = new Label("Báo cáo");
         BaoCao.getStyleClass().add("label-menu");
         Label CauHinh = new Label("Cấu hình");
@@ -143,34 +149,24 @@ public class BenhNhan extends Scene{
         tbDanhSachBN.setEditable(false);
         TableColumn maCol = new TableColumn("Mã");
         maCol.setPrefWidth(120);
-        maCol.setResizable(true);
         TableColumn tenCol = new TableColumn("Tên");
         tenCol.setPrefWidth(150);
-        tenCol.setResizable(true);
         TableColumn gioitinhCol = new TableColumn("Giới tính");
         gioitinhCol.setPrefWidth(70);
-        gioitinhCol.setResizable(true);
         TableColumn tuoiCol = new TableColumn("Tuổi");
         tuoiCol.setPrefWidth(50);
-        tuoiCol.setResizable(true);
         TableColumn cannangCol = new TableColumn("Cân nặng");
         cannangCol.setPrefWidth(70);
-        cannangCol.setResizable(true);
         TableColumn dienthoaiCol = new TableColumn("Điện thoại");
         dienthoaiCol.setPrefWidth(100);
-        dienthoaiCol.setResizable(true);
         TableColumn diachiCol = new TableColumn("Địa chỉ");
         diachiCol.setPrefWidth(200);
-        diachiCol.setResizable(true);
         TableColumn nhomCol = new TableColumn("Nhóm");
         nhomCol.setPrefWidth(120);
-        nhomCol.setResizable(true);
         TableColumn ngaylapCol = new TableColumn("Ngày lập");
         ngaylapCol.setPrefWidth(120);
-        ngaylapCol.setResizable(true);
         TableColumn chucNangCol = new TableColumn("Chức năng");
         chucNangCol.setPrefWidth(80);
-        chucNangCol.setResizable(true);
         
         tbDanhSachBN.getColumns().addAll(maCol, tenCol, gioitinhCol, tuoiCol, cannangCol, 
                 dienthoaiCol, diachiCol, nhomCol, ngaylapCol, chucNangCol);
