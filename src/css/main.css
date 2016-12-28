@@ -1,0 +1,147 @@
+.background{
+    -fx-background-image: url("../images/background.jpg");
+    -fx-background-repeat: no-repeat;
+}
+.button{
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#FFCF75, #FF8000);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-content-display: top;
+}
+.button:hover{
+    -fx-background-color: linear-gradient(#FF8000, #FFCF75);
+    -fx-cursor:HAND;
+}
+#welcome{
+    -fx-font-size: 15px;
+    -fx-font-family: "Century";
+    -fx-font-weight:bold;
+    -fx-fill:#AAF200;
+}
+#name, #logout{
+    -fx-font-size: 12px;
+    -fx-font-family:"Century";
+    -fx-fill:#AAF200;
+}
+#name:hover, #logout:hover{
+    -fx-fill:#FF8000;
+    -fx-underline: true;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-cursor:HAND;
+}
+
+.menu{
+    -fx-background-color:#000000;
+}
+.header{
+    -fx-background-color:#AAF200;
+}
+.label-main-menu,.label_submenu{
+    -fx-text-fill: White;
+    -fx-font-size:13px;
+    -fx-underline:false;
+    -fx-wrap-text:false;
+}
+.label_submenu{
+    -fx-font-size:13px;
+    -fx-font-weight:bold;
+    -fx-padding: 5,0,0,0;
+}
+.label-main-menu:hover, .label_submenu:hover{
+    -fx-text-fill: #FF8000;
+    -fx-font-style: italic;
+    -fx-cursor:HAND;
+}
+#BenhNhan, #HoaDon, #DonThuoc, #Thuoc, #NhapKho, #CauHinh{
+    -fx-text-fill:#AAF200;
+    -fx-font-style: italic;
+}
+.text-submenu{
+    -fx-font-size:20px;
+    -fx-font-family:"Arial Black";
+    -fx-font-weight:bold;
+    -fx-fill: #000000;
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.5) , 10, 0.0 , 0 , 2 );
+}
+
+.txt-button{
+    -fx-font-weight:bold;
+    -fx-font-family:"Arial";
+}
+.rec{
+    -fx-fill:  #FFCF75;
+}
+#group,#AddGroup,.txt{
+    -fx-font-weight:bold;
+    -fx-font-family:"Tahoma";
+    -fx-font-size:12px;
+}
+.rec:hover{
+    -fx-fill:#FF8000;
+    -fx-cursor:HAND;
+}
+#AddGroup:hover,.icon:hover,.icon-2:hover{
+    -fx-cursor:HAND;
+}
+.icon-2:hover{
+    -fx-fill:#AAF200;
+}
+.table-column{
+    -fx-alignment: center;
+}
+.text-result{
+    -fx-fill: #FF0000;
+    -fx-font-size:13px;
+    -fx-font-weight:bold;
+    -fx-font-family:"Arial";
+}
+.taskbar {
+    -fx-background-color: linear-gradient(#B6C0D2, #FFFFFF);
+    -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 1 , 0 );
+}
+.title, .txt-button-tt{
+    -fx-font-size:13px;
+    -fx-fill: #003366;
+    -fx-font-weight:600;
+}
+.content{
+    -fx-background-color: #CCCCCC;
+}
+.txt-button-tt:hover{
+    -fx-underline:true;
+    -fx-cursor:HAND;
+}
+.don-thuoc{
+    -fx-border-color:#DDD;
+    -fx-border-insets:5 5 5 5;
+    -fx-border-style:solid;
+    -fx-background-color: #FFFFFF;
+}
+.textfield-donthuoc{
+    -fx-background-image: url("../images/underline.png");
+    -fx-background-repeat:repeat-x;
+    -fx-background-position:bottom;
+    -fx-background-color: white;
+    -fx-padding:0;
+}
+.text-area{
+    -fx-background-color: #fff, #fff;
+}
+
+.text-area .content {
+    -fx-background-color: #fff;
+}
+
+.text-area:focused .content {
+    -fx-background-color: #fff;
+}
+.text-area .content{
+    -fx-background-image: url("../images/line.png");
+    -fx-background-repeat:repeat;
+    -fx-padding:0;
+}
+.label-donthuoc{
+    -fx-font-size:13.5px;
+}

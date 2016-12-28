@@ -13,13 +13,15 @@ import javafx.stage.Stage;
  * @author Quang Khanh
  */
 public class SceneController {
-    private static final  BenhNhan benhnhan = new BenhNhan();
+    private static final  BenhNhanPanel benhnhan = new BenhNhanPanel();
     private static final HomePage homepage = new HomePage();
-    private static final DangNhap dangnhap = new DangNhap();
-    private static final DonThuoc donthuoc = new DonThuoc();
-    private static final HoaDon hoadon = new HoaDon();
-    private static final Thuoc thuoc = new Thuoc();
-    private static final NhapKho nhapkho = new NhapKho();
+    private static final DangNhapPanel dangnhap = new DangNhapPanel();
+    private static final DonThuocPanel donthuoc = new DonThuocPanel();
+    private static final KeToaPanel ketoa = new KeToaPanel();
+    private static final HoaDonPanel hoadon = new HoaDonPanel();
+    private static final ThuocPanel thuoc = new ThuocPanel();
+    private static final NhapKhoPanel nhapkho = new NhapKhoPanel();
+    private static final CauHinhPanel cauhinh = new CauHinhPanel();
     public SceneController()
     {
         
@@ -38,10 +40,17 @@ public class SceneController {
     public static void setDangNhapPanel()
     {
         QuanLyPhongMach.getstage().setScene(dangnhap);
+        QuanLyPhongMach.getstage().setHeight(335);
+        QuanLyPhongMach.getstage().setWidth(450);
     }
     public static void setDonThuocPanel()
     {
         QuanLyPhongMach.getstage().setScene(donthuoc);
+        QuanLyPhongMach.getstage().setMaximized(true);
+    }
+    public static void setKeToaPanel()
+    {
+        QuanLyPhongMach.getstage().setScene(ketoa);
         QuanLyPhongMach.getstage().setMaximized(true);
     }
     public static void setHoaDonPanel()
@@ -57,6 +66,11 @@ public class SceneController {
     public static void setNhapKhoPanel()
     {
         QuanLyPhongMach.getstage().setScene(nhapkho);
+        QuanLyPhongMach.getstage().setMaximized(true);
+    }
+    public static void setCauHinhPanel()
+    {
+        QuanLyPhongMach.getstage().setScene(cauhinh);
         QuanLyPhongMach.getstage().setMaximized(true);
     }
 }

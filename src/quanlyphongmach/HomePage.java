@@ -40,6 +40,10 @@ public class HomePage extends Scene{
         
         ImageView img_CauHinh = new ImageView("/images/config.png");
         Button CauHinh = new Button("Cấu hình", img_CauHinh);
+        CauHinh.setOnAction(e->
+        {
+            SceneController.setCauHinhPanel();
+        });
         
         ImageView img_Thuoc = new ImageView("/images/pills5.png");
         Button Thuoc = new Button("Thuốc", img_Thuoc);
@@ -64,10 +68,13 @@ public class HomePage extends Scene{
         Text welcome = new Text("Welcome:");
         welcome.setId("welcome");
         Text logout = new Text("  Đăng xuất");
+        logout.setOnMousePressed(e->{
+            SceneController.setDangNhapPanel();
+        });
         logout.setId("logout");
         HBox header = new HBox(10);
         header.setPadding(new Insets(10,5,10,5));
-        header.setId("header");
+        header.getStyleClass().add("menu");
         
         header.getChildren().add(welcome);
         StackPane stack = new StackPane();
@@ -102,7 +109,8 @@ public class HomePage extends Scene{
         grid.setHgap(20);
         grid.setPadding(new Insets(100, 100,100,100));
         border.setCenter(grid);
-        getStylesheets().add(QuanLyPhongMach.class.getResource("/css/homepage.css").toExternalForm());
+        border.getStyleClass().add("background");
+        getStylesheets().add(QuanLyPhongMach.class.getResource("/css/main.css").toExternalForm());
         
     }
 }
