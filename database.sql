@@ -36,7 +36,7 @@ INSERT INTO `Nhom` VALUES
 /*===================bảng tài khoản===========================*/
 CREATE TABLE `Tai_Khoan`
 (
-	`Id` VARCHAR(5) NOT NULL,
+	`Id` VARCHAR(5) NOT NULL DEFAULT '0',
 	`Ten_Dang_Nhap` VARCHAR(20) NOT NULL,
 	`Mat_Khau` VARCHAR(15) NOT NULL,
 	`Nhom` VARCHAR(30),
@@ -47,16 +47,30 @@ CREATE TABLE `Tai_Khoan`
 	UNIQUE(`Ten_Dang_Nhap`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `Tai_Khoan_seq`
+(
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+/*===================Trigger tự động tăng id cho đơn thuốc===========================*/
+DELIMITER $$
+CREATE TRIGGER `Tai_Khoan_insert`
+BEFORE INSERT ON `Tai_Khoan`
+FOR EACH ROW
+BEGIN
+  INSERT INTO `Tai_Khoan_seq` VALUES (NULL);
+  SET NEW.Id = CONCAT('TK', LPAD(LAST_INSERT_ID(), 3, '0'));
+END$$
+DELIMITER ;
 /*===============================================================*/
 INSERT INTO `Tai_Khoan` VALUES
-('TK001','admin','admin','Admins','Đỗ Quang Khánh','01664202120','quangkhanh@gmail.com'),
-('TK002','bacsi','bacsi','Bác sĩ','Đỗ Quang Khánh','01664202120','quangkhanh@gmail.com'),
-('TK003','nhaplieu','nhaplieu','Nhập liệu','Đỗ Quang Khánh','01664202120','quangkhanh@gmail.com');
+('','admin','admin','Admins','Đỗ Quang Khánh','01664202120','quangkhanh@gmail.com'),
+('','bacsi','bacsi','Bác sĩ','Đỗ Quang Khánh','01664202120','quangkhanh@gmail.com'),
+('','nhaplieu','nhaplieu','Nhập liệu','Đỗ Quang Khánh','01664202120','quangkhanh@gmail.com');
 
 /*===================bảng bệnh nhân===========================*/
 CREATE TABLE `Benh_Nhan`
 (
-	`MaBN` VARCHAR(20) NOT NULL,
+	`MaBN` VARCHAR(20) NOT NULL DEFAULT '0',
 	`Ten`  VARCHAR(30) NOT NULL,
 	`Ngay_Sinh`  DATE,
 	`Gioi_Tinh` VARCHAR(10),
@@ -66,18 +80,32 @@ CREATE TABLE `Benh_Nhan`
 	PRIMARY KEY(`MaBN`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `Benh_Nhan_seq`
+(
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+/*===================Trigger tự động tăng id cho đơn thuốc===========================*/
+DELIMITER $$
+CREATE TRIGGER `Benh_Nhan_insert`
+BEFORE INSERT ON `Benh_Nhan`
+FOR EACH ROW
+BEGIN
+  INSERT INTO `Benh_Nhan_seq` VALUES (NULL);
+  SET NEW.MaBN = CONCAT('BN', LPAD(LAST_INSERT_ID(), 8, '0'));
+END$$
+DELIMITER ;
 /*===============================================================*/
 INSERT INTO `Benh_Nhan` VALUES
-('BN00000001','Mai Phương Thảo','1995-1-1','Nữ','094912364','TP.HCM',NULL),
-('BN00000002','Trần Việt Dũng','1996-2-1','Nam','0918716482','Đồng Nai',NULL),
-('BN00000003','Đinh Huy Hoàng','2000-4-3','Nam','0984618237','Cần Thơ',NULL),
-('BN00000004','Vũ Phương Thảo','1989-2-2','Nữ','0914618613','An Giang',NULL),
-('BN00000005','Mai Phương Lan','1968-12-8','Nữ','0947145612','Long An',NULL);
+('','Mai Phương Thảo','1995-1-1','Nữ','094912364','TP.HCM',NULL),
+('','Trần Việt Dũng','1996-2-1','Nam','0918716482','Đồng Nai',NULL),
+('','Đinh Huy Hoàng','2000-4-3','Nam','0984618237','Cần Thơ',NULL),
+('','Vũ Phương Thảo','1989-2-2','Nữ','0914618613','An Giang',NULL),
+('','Mai Phương Lan','1968-12-8','Nữ','0947145612','Long An',NULL);
 
 /*===================bảng đơn thuốc===========================*/
 CREATE TABLE `Don_Thuoc`
 (
-	`Ma_Don_Thuoc` VARCHAR(20) NOT NULL,
+	`Ma_Don_Thuoc` VARCHAR(20) NOT NULL DEFAULT '0',
 	`MaBN` VARCHAR(20) NOT NULL,
 	`Chan_Doan` VARCHAR(100),
 	`Loi_Dan` VARCHAR(100),
@@ -85,6 +113,20 @@ CREATE TABLE `Don_Thuoc`
 	PRIMARY KEY(`Ma_Don_Thuoc`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `Don_Thuoc_seq`
+(
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+/*===================Trigger tự động tăng id cho đơn thuốc===========================*/
+DELIMITER $$
+CREATE TRIGGER `Don_Thuoc_insert`
+BEFORE INSERT ON `Don_Thuoc`
+FOR EACH ROW
+BEGIN
+  INSERT INTO `Don_Thuoc_seq` VALUES (NULL);
+  SET NEW.Ma_Don_Thuoc = CONCAT('DT', LPAD(LAST_INSERT_ID(), 6, '0'));
+END$$
+DELIMITER ;
 /*===============================================================*/
 
 /*===================bảng Chi tiết đơn thuốc===========================*/

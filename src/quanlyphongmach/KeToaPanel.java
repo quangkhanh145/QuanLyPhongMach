@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -25,10 +26,13 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -48,6 +52,7 @@ import javafx.scene.text.Text;
 import javax.sql.rowset.CachedRowSet;
 import static quanlyphongmach.DonThuocPanel.Scene;
 import quanlyphongmach.model.BenhNhan;
+import quanlyphongmach.model.ChiTietDonThuoc;
 import quanlyphongmach.model.Thuoc;
 
 /**
@@ -59,6 +64,10 @@ public class KeToaPanel extends Scene{
     private ConnectToDatabase conn = new ConnectToDatabase();
     private CachedRowSet crs;
     private BenhNhan benhnhan;
+    TableView tb_thongtinthuoc;
+    Text txt_total;
+    private final ObservableList<Thuoc> thuoc = FXCollections.observableArrayList();
+    private final ObservableList<ChiTietDonThuoc> ct_donthuoc = FXCollections.observableArrayList();
     public KeToaPanel()
     {
         super(Scene);
@@ -244,7 +253,7 @@ public class KeToaPanel extends Scene{
                     rec.setOnMouseClicked(e->{
                         try {
                             content_Thuoc.getChildren().clear();
-                            String query = "Select Ten_Thuoc FROM `Thuoc` WHERE"
+                            String query = "Select Ma_Thuoc, Ten_Thuoc, Don_Vi, Cach_Dung, Gia_Ban FROM `Thuoc` WHERE"
                                     + " `Nhom` LIKE '%"+tennhom+"%'";
                             CachedRowSet crs_thuoc = conn.getCRS(query);
                             if(crs_thuoc.isBeforeFirst())
@@ -255,11 +264,37 @@ public class KeToaPanel extends Scene{
                                     rec1.getStyleClass().add("icon-2");
                                     rec1.setFill(Color.web("#C0C0C0"));
                                     String tenthuoc = crs_thuoc.getString("Ten_Thuoc");
+                                    String mathuoc = crs_thuoc.getString("Ma_Thuoc");
+                                    String donvi = crs_thuoc.getString("Don_Vi");
+                                    String cachdung = crs_thuoc.getString("Cach_Dung");
+                                    Double giaban = crs_thuoc.getDouble("Gia_Ban");
                                     Text txt1 = new Text(tenthuoc.toUpperCase());
                                     txt1.setFill(Color.web("#000000"));
                                     txt1.setFont(Font.font("Arial", FontWeight.EXTRA_LIGHT, 12));
                                     txt1.setMouseTransparent(true);
                                     txt1.setWrappingWidth(160);
+                                    
+                                    rec1.setOnMouseClicked(event->{
+                                        ChiTietDonThuoc ct = new ChiTietDonThuoc();
+                                        ct.setMa_Thuoc(mathuoc);
+                                        ct.setTen_Thuoc(tenthuoc);
+                                        ct.setSo_Luong(1);
+                                        ct.setDon_Vi(donvi);
+                                        ct.setCach_Dung(cachdung);
+                                        ct.setGia_Ban(giaban);
+                                        for(ChiTietDonThuoc thuoc : ct_donthuoc)
+                                        {
+                                            if(thuoc.getMa_Thuoc().equalsIgnoreCase(ct.getMa_Thuoc()))
+                                            {
+                                                thuoc.setSo_Luong(thuoc.getSo_Luong() + 1);
+                                                tb_thongtinthuoc.refresh();
+                                                txt_total.setText(updateTienThuoc().toString());
+                                                return;
+                                            }
+                                        }
+                                        ct_donthuoc.add(ct);
+                                        txt_total.setText(updateTienThuoc().toString());
+                                    });
                                     
                                     StackPane stack1 = new StackPane();
                                     stack1.getChildren().addAll(rec1, txt1);
@@ -374,7 +409,7 @@ public class KeToaPanel extends Scene{
         info.add(tf_chandoan, 1, 5);
         
         VBox vb_tb_thongtinthuoc = new VBox(0);
-        TableView tb_thongtinthuoc = new TableView();
+        tb_thongtinthuoc = new TableView();
         tb_thongtinthuoc.setPrefSize(500, 200);
         TableColumn tenthuocCol = new TableColumn("Tên thuốc");
         tenthuocCol.setPrefWidth(100);
@@ -382,10 +417,46 @@ public class KeToaPanel extends Scene{
         soluongCol.setPrefWidth(70);
         TableColumn donviCol = new TableColumn("Đơn vị");
         donviCol.setPrefWidth(50);
+        TableColumn dongiaCol = new TableColumn("Đơn giá");
+        dongiaCol.setPrefWidth(100);
         TableColumn cachdungCol = new TableColumn("Cách dùng");
-        cachdungCol.setPrefWidth(280);
+        cachdungCol.setPrefWidth(202);
+        TableColumn<ChiTietDonThuoc, ChiTietDonThuoc> chucnangCol = new TableColumn();
+        chucnangCol.setPrefWidth(35);
         
-        tb_thongtinthuoc.getColumns().addAll(tenthuocCol, soluongCol, donviCol, cachdungCol);
+        tenthuocCol.setCellValueFactory(new PropertyValueFactory<Thuoc,String>("Ten_Thuoc"));
+        soluongCol.setCellValueFactory(new PropertyValueFactory<Thuoc,Integer>("So_Luong"));
+        donviCol.setCellValueFactory(new PropertyValueFactory<Thuoc,Integer>("Don_Vi"));
+        dongiaCol.setCellValueFactory(new PropertyValueFactory<Thuoc,Double>("Gia_Ban"));
+        cachdungCol.setCellValueFactory(new PropertyValueFactory<Thuoc,String>("Cach_Dung"));
+        chucnangCol.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(column.getValue()));
+        chucnangCol.setCellFactory(column -> new TableCell<ChiTietDonThuoc, ChiTietDonThuoc>(){
+            @Override
+            protected void updateItem(ChiTietDonThuoc ct, boolean empty)
+            {
+                super.updateItem(ct, empty);
+                if(ct == null){
+                    setGraphic(null);
+                    return;
+                }
+                HBox hb_chucnang = new HBox(10);
+                hb_chucnang.setAlignment(Pos.CENTER);
+                
+                Rectangle icon_Xoa = CreateIcon(16,16,"/images/icon-trash.png");
+                icon_Xoa.getStyleClass().add("icon");
+                Tooltip.install(icon_Xoa, new Tooltip("Xoá"));
+                
+                icon_Xoa.setOnMousePressed(e->{
+                    ct_donthuoc.remove(ct);
+                    txt_total.setText(updateTienThuoc().toString());
+                });
+                hb_chucnang.getChildren().addAll(icon_Xoa);
+                setGraphic(hb_chucnang);
+            }
+        });
+        
+        tb_thongtinthuoc.getColumns().addAll(tenthuocCol, soluongCol, donviCol, dongiaCol, cachdungCol, chucnangCol);
+        tb_thongtinthuoc.setItems(ct_donthuoc);
         vb_tb_thongtinthuoc.getChildren().add(tb_thongtinthuoc);
         vb_tb_thongtinthuoc.setPadding(new Insets(10,0,0,0));
         
@@ -437,7 +508,7 @@ public class KeToaPanel extends Scene{
         Button save_print = new Button("Lưu và in");
         Label total = new Label("Tổng tiền thuốc");
         total.setFont(Font.font(13.5));
-        Text txt_total = new Text("100000");
+        txt_total = new Text("0");
         //txt_total.set(Color.web("#FF8000"));
         HBox hb_total = new HBox(10);
         hb_total.getChildren().add(txt_total);
@@ -451,5 +522,14 @@ public class KeToaPanel extends Scene{
         wrap_content.getChildren().addAll(donthuoc, bang_dieu_khien);
         wrap.setContent(wrap_content);
         return wrap;
+    }
+    public Double updateTienThuoc()
+    {
+        double tienthuoc = 0.0;
+        for(ChiTietDonThuoc thuoc: ct_donthuoc)
+        {
+            tienthuoc += thuoc.getGia_Ban() * thuoc.getSo_Luong();
+        }
+        return tienthuoc;
     }
 }
