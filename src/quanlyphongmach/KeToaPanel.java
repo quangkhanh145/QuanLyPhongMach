@@ -47,6 +47,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javax.sql.rowset.CachedRowSet;
 import static quanlyphongmach.DonThuocPanel.Scene;
+import quanlyphongmach.model.BenhNhan;
 import quanlyphongmach.model.Thuoc;
 
 /**
@@ -54,14 +55,21 @@ import quanlyphongmach.model.Thuoc;
  * @author Quang Khanh
  */
 public class KeToaPanel extends Scene{
-    static BorderPane Scene = new BorderPane();
+    private static BorderPane Scene = new BorderPane();;
     private ConnectToDatabase conn = new ConnectToDatabase();
     private CachedRowSet crs;
+    private BenhNhan benhnhan;
     public KeToaPanel()
     {
-        super(Scene);      
+        super(Scene);
         CreateScene();
-        getStylesheets().add(QuanLyPhongMach.class.getResource("/css/main.css").toExternalForm());  
+        getStylesheets().add(QuanLyPhongMach.class.getResource("/css/main.css").toExternalForm());
+        
+    }
+    public void setBenhNhan(BenhNhan benhnhan)
+    {
+        this.benhnhan = benhnhan;
+        CreateScene();
     }
     private void CreateScene()
     {
@@ -155,12 +163,6 @@ public class KeToaPanel extends Scene{
         flow_pane.setVgap(20);
         flow_pane.setHgap(20);
         String sql_thuoc = "SELECT Ten_Nhom FROM `Nhom` WHERE Loai='Thuốc' ORDER BY id asc";
-//        VBox QuaTrinhDieuTri = CreateBox("Quá trình điều trị","Ở đây sẽ hiển thị các toa cũ (bệnh sử) của bệnh nhân để bác sĩ chọn làm mẫu khi kê toa mới.","","");
-//        VBox DienTienBenh = CreateBox("Diễn tiến bệnh", "Ở đây sẽ hiển thị các thông tin diễn tiến bệnh của bệnh nhân. Nhấp chuột vào nút `Thêm` để thêm mới diễn tiến bệnh.","","Thêm");
-//        VBox CacNhomThuoc = CreateBox("Các nhóm thuốc","",sql_thuoc,"");
-//        VBox Thuoc = CreateBox("Thuốc","","","");
-
-//        flow_pane.getChildren().addAll(QuaTrinhDieuTri, DienTienBenh, CacNhomThuoc, Thuoc);
         Text txt_content1 = new Text();
         txt_content1.setFont(Font.font(13));
         txt_content1.setWrappingWidth(350);
@@ -336,20 +338,28 @@ public class KeToaPanel extends Scene{
         lb_diachi.getStyleClass().add("label-donthuoc");
         Label lb_gioitinh = new Label("Giới tính : ");
         lb_gioitinh.getStyleClass().add("label-donthuoc");
-        Label lb_cannang = new Label("Cân nặng: ");
-        lb_cannang.getStyleClass().add("label-donthuoc");
         Label lb_chandoan = new Label("Chẩn đoán : ");
         lb_chandoan.getStyleClass().add("label-donthuoc");
         
         Text txt_ten = new Text();
+        txt_ten.setStyle("-fx-font-weight: bold;");
         Text txt_namsinh = new Text();
         Text txt_dt = new Text();
         Text txt_diachi = new Text();
         Text txt_gioitinh = new Text();
-        Text txt_cannang = new Text();
         TextField tf_chandoan = new TextField();
         tf_chandoan.getStyleClass().add("textfield-donthuoc");
         tf_chandoan.setPrefWidth(350);
+        
+        if(benhnhan != null)
+        {
+            txt_ten.setText(benhnhan.getTen());
+            txt_namsinh.setText(benhnhan.getNgaySinh());
+            txt_dt.setText(benhnhan.getSDT());
+            txt_diachi.setText(benhnhan.getDiaChi());
+            txt_gioitinh.setText(benhnhan.getGioiTinh());
+        }
+        
         info.add(lb_ten, 0, 0);
         info.add(txt_ten, 1, 0);
         info.add(lb_namsinh, 0, 1);
@@ -360,10 +370,8 @@ public class KeToaPanel extends Scene{
         info.add(txt_gioitinh, 1, 3);
         info.add(lb_diachi, 0, 4);
         info.add(txt_diachi, 1, 4);
-        info.add(lb_cannang, 0, 5);
-        info.add(txt_cannang, 1, 5);
-        info.add(lb_chandoan, 0, 6);
-        info.add(tf_chandoan, 1, 6);
+        info.add(lb_chandoan, 0, 5);
+        info.add(tf_chandoan, 1, 5);
         
         VBox vb_tb_thongtinthuoc = new VBox(0);
         TableView tb_thongtinthuoc = new TableView();

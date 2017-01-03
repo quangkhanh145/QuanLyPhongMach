@@ -223,7 +223,7 @@ public class BenhNhanPanel extends Scene{
                 Tooltip.install(icon_DonThuoc, new Tooltip("Kê toa"));
                 
                 icon_DonThuoc.setOnMousePressed(e->{
-                    SceneController.setKeToaPanel();
+                    SceneController.setKeToaPanel(benhnhan);
                 });
                 
                 hb_chucnang.getChildren().addAll(icon_DonThuoc, icon_Sua, icon_Xoa);

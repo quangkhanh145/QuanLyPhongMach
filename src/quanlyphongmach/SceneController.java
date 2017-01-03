@@ -7,6 +7,7 @@ package quanlyphongmach;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import quanlyphongmach.model.BenhNhan;
 
 /**
  *
@@ -48,8 +49,9 @@ public class SceneController {
         QuanLyPhongMach.getstage().setScene(donthuoc);
         QuanLyPhongMach.getstage().setMaximized(true);
     }
-    public static void setKeToaPanel()
+    public static void setKeToaPanel(BenhNhan benhnhan)
     {
+        ketoa.setBenhNhan(benhnhan);
         QuanLyPhongMach.getstage().setScene(ketoa);
         QuanLyPhongMach.getstage().setMaximized(true);
     }

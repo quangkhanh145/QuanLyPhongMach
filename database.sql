@@ -105,8 +105,8 @@ CREATE TABLE `Dien_Tien_Benh`
 	`MaBN` VARCHAR(20) NOT NULL,
 	`GhiChu` VARCHAR(255) NOT NULL,
 	`NgayKham` DATE,
-	PRIMARY KEY(`Ma`);
-)
+	PRIMARY KEY(`Ma`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*===============================================================*/
 /*===================bảng thuốc===========================*/
 
