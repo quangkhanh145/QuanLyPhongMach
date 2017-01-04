@@ -21,6 +21,8 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -50,7 +52,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javax.sql.rowset.CachedRowSet;
-import static quanlyphongmach.DonThuocPanel.Scene;
 import quanlyphongmach.model.BenhNhan;
 import quanlyphongmach.model.ChiTietDonThuoc;
 import quanlyphongmach.model.Thuoc;
@@ -64,8 +65,8 @@ public class KeToaPanel extends Scene{
     private ConnectToDatabase conn = new ConnectToDatabase();
     private CachedRowSet crs;
     private BenhNhan benhnhan;
-    TableView tb_thongtinthuoc;
-    Text txt_total;
+    private TableView tb_thongtinthuoc;
+    private Text txt_total;
     private final ObservableList<Thuoc> thuoc = FXCollections.observableArrayList();
     private final ObservableList<ChiTietDonThuoc> ct_donthuoc = FXCollections.observableArrayList();
     public KeToaPanel()
@@ -78,6 +79,7 @@ public class KeToaPanel extends Scene{
     public void setBenhNhan(BenhNhan benhnhan)
     {
         this.benhnhan = benhnhan;
+        ct_donthuoc.clear();
         CreateScene();
     }
     private void CreateScene()
@@ -509,7 +511,6 @@ public class KeToaPanel extends Scene{
         Label total = new Label("Tổng tiền thuốc");
         total.setFont(Font.font(13.5));
         txt_total = new Text("0");
-        //txt_total.set(Color.web("#FF8000"));
         HBox hb_total = new HBox(10);
         hb_total.getChildren().add(txt_total);
         hb_total.setAlignment(Pos.CENTER_RIGHT);
@@ -518,6 +519,50 @@ public class KeToaPanel extends Scene{
         bang_dieu_khien.getChildren().addAll(save, save_print, total, hb_total);
         bang_dieu_khien.setPadding(new Insets(0,0,30,10));
         bang_dieu_khien.setHgrow(total, Priority.ALWAYS);
+        
+        save.setOnAction(e->{
+            try {
+                String sql = "INSERT INTO `don_thuoc` VALUES ('',"
+                        + "'"+benhnhan.getMaBN()+"',"
+                        + "'"+tf_chandoan.getText()+"',"
+                        + "'"+ta_loidan.getText()+"',"
+                        + "'"+LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE)+"',"
+                        +"'"+"',"
+                        + "'"+updateTienThuoc()+"');";
+                conn.getPS(sql);
+                sql = "SELECT `Ma_Don_Thuoc` FROM `don_thuoc` ORDER BY `Ma_Don_Thuoc` DESC LIMIT 1;";
+                crs = conn.getCRS(sql);
+                if(crs.next())
+                {
+                    String madonthuoc = crs.getString("Ma_Don_Thuoc");
+                    String insert_sql = "INSERT INTO `chi_tiet_don_thuoc` VALUES ";
+                    for(ChiTietDonThuoc thuoc: ct_donthuoc)
+                    {
+                        
+                        insert_sql += "("
+                                +"'"+madonthuoc+"',"
+                                + "'"+thuoc.getMa_Thuoc()+"',"
+                                + "'"+thuoc.getSo_Luong()+"',"
+                                + "'"+thuoc.getGia_Ban()+"',"
+                                + "'"+thuoc.getCach_Dung()+"'),";
+                    }
+                    insert_sql = insert_sql.substring(0, insert_sql.length() - 1);
+                    System.out.print(insert_sql);
+                    if(conn.getPS(insert_sql) != 0)
+                    {
+                        SceneController.setDonThuocPanel();
+                    } else{
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Error Dialog");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Ooops, there was an error!");
+                        alert.showAndWait();
+                    }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(KeToaPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         
         wrap_content.getChildren().addAll(donthuoc, bang_dieu_khien);
         wrap.setContent(wrap_content);

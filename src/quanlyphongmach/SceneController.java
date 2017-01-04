@@ -46,6 +46,7 @@ public class SceneController {
     }
     public static void setDonThuocPanel()
     {
+        donthuoc.loadDsDonThuoc();
         QuanLyPhongMach.getstage().setScene(donthuoc);
         QuanLyPhongMach.getstage().setMaximized(true);
     }

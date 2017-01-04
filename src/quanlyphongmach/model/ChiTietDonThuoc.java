@@ -30,12 +30,12 @@ public class ChiTietDonThuoc {
     public ChiTietDonThuoc()
     {
 //        this.Ma_Don_Thuoc = new SimpleStringProperty(null);
-        this.Ma_Thuoc = new SimpleStringProperty(null);
+        this.Ma_Thuoc = new SimpleStringProperty("");
         this.So_Luong = 0;
         this.Gia_Ban = 0.0;
-        this.Cach_Dung = new SimpleStringProperty(null);
-        this.Ten_Thuoc = new SimpleStringProperty(null);
-        this.Don_Vi = new SimpleStringProperty(null);
+        this.Cach_Dung = new SimpleStringProperty("");
+        this.Ten_Thuoc = new SimpleStringProperty("");
+        this.Don_Vi = new SimpleStringProperty("");
     }
 
 //    public String getMa_Don_Thuoc() {

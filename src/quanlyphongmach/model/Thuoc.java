@@ -22,14 +22,14 @@ public class Thuoc {
     private SimpleStringProperty Nhom;
 
     public Thuoc() {
-        this.MaThuoc = new SimpleStringProperty(null);
-        this.TenThuoc = new SimpleStringProperty(null);
-        this.DonVi = new SimpleStringProperty(null);
+        this.MaThuoc = new SimpleStringProperty("");
+        this.TenThuoc = new SimpleStringProperty("");
+        this.DonVi = new SimpleStringProperty("");
         this.GiaBan = 0;
         this.TonKho = 0;
         this.LieuLuong = 0;
-        this.CachDung = new SimpleStringProperty(null);
-        this.Nhom = new SimpleStringProperty(null);
+        this.CachDung = new SimpleStringProperty("");
+        this.Nhom = new SimpleStringProperty("");
     }
 
     

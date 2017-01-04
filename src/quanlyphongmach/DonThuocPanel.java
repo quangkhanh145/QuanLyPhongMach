@@ -1,5 +1,17 @@
 package quanlyphongmach;
 
+import java.sql.Date;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -16,13 +29,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javax.sql.rowset.CachedRowSet;
+import quanlyphongmach.model.DSDonThuoc;
 
 /**
  *
  * @author Quang Khanh
  */
 public class DonThuocPanel extends Scene{
-    static BorderPane Scene = new BorderPane();
+    private static BorderPane Scene = new BorderPane();
+    private ObservableList<DSDonThuoc> ds_DonThuoc = FXCollections.observableArrayList();
+    private ConnectToDatabase conn = new ConnectToDatabase();
+    private CachedRowSet crs;
     public DonThuocPanel()
     {
         super(Scene);
@@ -133,36 +151,43 @@ public class DonThuocPanel extends Scene{
     }
     private VBox tb_DSDonThuoc()
     {
+        loadDsDonThuoc();
         TableView tbDanhSachToaThuoc = new TableView();
         tbDanhSachToaThuoc.setEditable(false);
         TableColumn maCol = new TableColumn("Mã số");
         maCol.setPrefWidth(120);
-        maCol.setResizable(true);
         TableColumn tenCol = new TableColumn("Tên bệnh nhân");
         tenCol.setPrefWidth(150);
-        tenCol.setResizable(true);
         TableColumn tuoiCol = new TableColumn("Tuổi");
         tuoiCol.setPrefWidth(50);
-        tuoiCol.setResizable(true);
         TableColumn chanDoanCol = new TableColumn("Chẩn đoán");
         chanDoanCol.setPrefWidth(150);
-        chanDoanCol.setResizable(true);
         TableColumn tongtienCol = new TableColumn("Tổng tiền thuốc");
         tongtienCol.setPrefWidth(120);
-        tongtienCol.setResizable(true);
         TableColumn nguoiLapCol = new TableColumn("Người lập");
         nguoiLapCol.setPrefWidth(120);
-        nguoiLapCol.setResizable(true);
         TableColumn ngayLapCol = new TableColumn("Ngày lập");
         ngayLapCol.setPrefWidth(120);
-        ngayLapCol.setResizable(true);
         TableColumn chucNangCol = new TableColumn("Chức năng");
         chucNangCol.setPrefWidth(100);
-        chucNangCol.setResizable(true);
+        
         tbDanhSachToaThuoc.getColumns().addAll(maCol, tenCol, tuoiCol, chanDoanCol, tongtienCol, nguoiLapCol, ngayLapCol, chucNangCol);
+        tbDanhSachToaThuoc.setItems(ds_DonThuoc);
+        
+        maCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Ma_Don_Thuoc"));
+        tenCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Ten_Benh_Nhan"));
+        tuoiCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,Integer>("Tuoi"));
+        chanDoanCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Chan_Doan"));
+        tongtienCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,Double>("Tong_Tien"));
+        nguoiLapCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Nguoi_Lap"));
+        ngayLapCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Ngay_Lap"));
+        
+        
         VBox table = new VBox(10);
         table.setPadding(new Insets(15, 10, 15, 20));
         table.getChildren().add(tbDanhSachToaThuoc);
+        
+        
         
         return table;
     }
@@ -175,5 +200,35 @@ public class DonThuocPanel extends Scene{
         
         
         return flow_pane;
+    }
+    public void loadDsDonThuoc()
+    {
+        ds_DonThuoc.clear();
+        try {
+            String sql = "SELECT Ma_Don_Thuoc, don_thuoc.MaBN, Chan_Doan, Ngay_Lap, Nguoi_Lap, Tong_Tien,Ten, Ngay_Sinh FROM don_thuoc "
+                    + "INNER JOIN benh_nhan ON don_thuoc.MaBN = benh_nhan.MaBN ORDER BY Ma_Don_Thuoc ASC";
+            crs = conn.getCRS(sql);
+            while(crs.next())
+            {
+                DSDonThuoc ds = new DSDonThuoc();
+                ds.setMa_Don_Thuoc(crs.getString("Ma_Don_Thuoc"));
+                ds.setTen_Benh_Nhan(crs.getString("Ten"));
+                ds.setChan_Doan(crs.getString("Chan_Doan"));
+                ds.setNgay_Lap(crs.getString("Ngay_Lap"));
+                ds.setNguoi_Lap(crs.getString("Nguoi_Lap"));
+                ds.setTong_Tien(crs.getDouble("Tong_Tien"));
+                int tuoi = 0;
+                
+                Date ngaysinh = crs.getDate("Ngay_Sinh");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy");
+                int namsinh = Integer.parseInt(dateFormat.format(ngaysinh));
+                int namhientai = Integer.parseInt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy")));
+                tuoi = namhientai - namsinh;
+                ds.setTuoi(tuoi);
+                ds_DonThuoc.add(ds);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DonThuocPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

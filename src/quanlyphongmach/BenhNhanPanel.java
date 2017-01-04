@@ -49,7 +49,7 @@ import quanlyphongmach.model.BenhNhan;
 public class BenhNhanPanel extends Scene{
     private static final BorderPane Scene = new BorderPane();
     private final ObservableList<BenhNhan> data = FXCollections.observableArrayList();
-    private ConnectToDatabase conn = new ConnectToDatabase();;
+    private ConnectToDatabase conn = new ConnectToDatabase();
     private CachedRowSet crs;
     private String sql;
     private Stage stage_Child;
@@ -341,7 +341,6 @@ public class BenhNhanPanel extends Scene{
            TTBenhNhan.setAlignment(Pos.CENTER);
            TTBenhNhan.setPadding(new Insets(10,0,10,0));
            
-           Label lb_maBN = new Label("Mã bệnh nhân");
            Label lb_ten = new Label("Tên bệnh nhân");
            Label lb_ngaysinh = new Label("Ngày sinh");
            Label lb_gioitinh = new Label("Giới tính");
@@ -349,7 +348,6 @@ public class BenhNhanPanel extends Scene{
            Label lb_diachi = new Label("Địa chỉ");
            Label lb_nhom = new Label("Nhóm");
            
-           TextField tfMaBN = new TextField();
            TextField tfTen = new TextField();
            DatePicker dpNgaysinh = new DatePicker();
            ComboBox cmbGioitinh = new ComboBox();
@@ -365,11 +363,6 @@ public class BenhNhanPanel extends Scene{
            Button btnHoanTat = new Button("Hoàn tất");
            btnHoanTat.setOnAction(e->{
                BenhNhan bn = new BenhNhan();
-               if(tfMaBN.getText().length() == 0)
-               {
-                    txt_result.setText("Vui lòng nhập mã bệnh nhân");
-                    return;
-               }
                if(tfTen.getText().length() == 0)
                {
                     txt_result.setText("Tên bệnh nhân không được trống");
@@ -392,12 +385,11 @@ public class BenhNhanPanel extends Scene{
                    txt_result.setText("Số điện thoại không hợp lệ");
                    return;
                }
-               bn.setMaBN(tfMaBN.getText());
                bn.setTen(tfTen.getText());
                bn.setDiaChi(tfDiachi.getText());
                bn.setNgaySinh(dpNgaysinh.getValue().toString());
                bn.setSDT(tfSdt.getText());
-               sql = "INSERT INTO `Benh_Nhan` VALUES('"+bn.getMaBN()+"'"
+               sql = "INSERT INTO `Benh_Nhan` VALUES(''"
                        + ",'"+bn.getTen()+"','"+bn.getNgaySinh()+"','"
                        + bn.getGioiTinh()+"','"+bn.getSDT()+"','"+bn.getDiaChi()+"','"
                        + bn.getNhom()+"')";
@@ -406,7 +398,7 @@ public class BenhNhanPanel extends Scene{
                    txt_result.setText("Mã bệnh nhân đã tồn tại");
                    return;
                }
-               data.add(bn);
+               loadData();
                stage_Child.close();
            });
            btnHoanTat.setAlignment(Pos.CENTER);
@@ -420,23 +412,23 @@ public class BenhNhanPanel extends Scene{
            btnHoanTat.setPrefSize(100, 40);
            btnBoQua.setPrefSize(100, 40);
            
-           TTBenhNhan.add(lb_maBN, 0, 0);
-           TTBenhNhan.add(tfMaBN, 1, 0);
-           TTBenhNhan.add(lb_ten, 0, 1);
-           TTBenhNhan.add(tfTen, 1, 1);
-           TTBenhNhan.add(lb_ngaysinh, 0, 2);
-           TTBenhNhan.add(dpNgaysinh, 1, 2);
-           TTBenhNhan.add(lb_gioitinh, 0, 3);
-           TTBenhNhan.add(cmbGioitinh, 1, 3);
-           TTBenhNhan.add(lb_sdt, 0, 4);
-           TTBenhNhan.add(tfSdt, 1, 4);
-           TTBenhNhan.add(lb_diachi, 0, 5);
-           TTBenhNhan.add(tfDiachi, 1, 5);
-           TTBenhNhan.add(lb_nhom, 0, 6);
-           TTBenhNhan.add(cmbNhom, 1, 6);
-           TTBenhNhan.add(txt_result, 0, 7, 2 ,1);
-           TTBenhNhan.add(btnHoanTat, 0, 8);
-           TTBenhNhan.add(btnBoQua, 1, 8);
+//           TTBenhNhan.add(lb_maBN, 0, 0);
+//           TTBenhNhan.add(tfMaBN, 1, 0);
+           TTBenhNhan.add(lb_ten, 0, 0);
+           TTBenhNhan.add(tfTen, 1, 0);
+           TTBenhNhan.add(lb_ngaysinh, 0, 1);
+           TTBenhNhan.add(dpNgaysinh, 1, 1);
+           TTBenhNhan.add(lb_gioitinh, 0, 2);
+           TTBenhNhan.add(cmbGioitinh, 1, 2);
+           TTBenhNhan.add(lb_sdt, 0, 3);
+           TTBenhNhan.add(tfSdt, 1, 3);
+           TTBenhNhan.add(lb_diachi, 0, 4);
+           TTBenhNhan.add(tfDiachi, 1, 4);
+           TTBenhNhan.add(lb_nhom, 0, 5);
+           TTBenhNhan.add(cmbNhom, 1, 5);
+           TTBenhNhan.add(txt_result, 0, 6, 2 ,1);
+           TTBenhNhan.add(btnHoanTat, 0, 7);
+           TTBenhNhan.add(btnBoQua, 1, 7);
            Scene_Child = new Scene(TTBenhNhan,400,500);
        }
        public void XoaBenhNhan(BenhNhan benhnhan)
@@ -475,7 +467,6 @@ public class BenhNhanPanel extends Scene{
            TTBenhNhan.setAlignment(Pos.CENTER);
            TTBenhNhan.setPadding(new Insets(10,0,10,0));
            
-           Label lb_maBN = new Label("Mã bệnh nhân");
            Label lb_ten = new Label("Tên bệnh nhân");
            Label lb_ngaysinh = new Label("Ngày sinh");
            Label lb_gioitinh = new Label("Giới tính");
@@ -483,8 +474,6 @@ public class BenhNhanPanel extends Scene{
            Label lb_diachi = new Label("Địa chỉ");
            Label lb_nhom = new Label("Nhóm");
            
-           TextField tfMaBN = new TextField();
-           tfMaBN.setText(benhnhan.getMaBN());
            TextField tfTen = new TextField();
            tfTen.setText(benhnhan.getTen());
            DatePicker dpNgaysinh = new DatePicker();
@@ -506,11 +495,6 @@ public class BenhNhanPanel extends Scene{
            Button btnHoanTat = new Button("Hoàn tất");
            btnHoanTat.setOnAction(e->{
                BenhNhan bn = new BenhNhan();
-               if(tfMaBN.getText().length() == 0)
-               {
-                    txt_result.setText("Vui lòng nhập mã bệnh nhân");
-                    return;
-               }
                if(tfTen.getText().length() == 0)
                {
                     txt_result.setText("Tên bệnh nhân không được trống");
@@ -533,7 +517,6 @@ public class BenhNhanPanel extends Scene{
                    txt_result.setText("Số điện thoại không hợp lệ");
                    return;
                }
-               bn.setMaBN(tfMaBN.getText());
                bn.setTen(tfTen.getText());
                bn.setDiaChi(tfDiachi.getText());
                bn.setNgaySinh(dpNgaysinh.getValue().toString());
@@ -564,23 +547,21 @@ public class BenhNhanPanel extends Scene{
            btnHoanTat.setPrefSize(100, 40);
            btnBoQua.setPrefSize(100, 40);
            
-           TTBenhNhan.add(lb_maBN, 0, 0);
-           TTBenhNhan.add(tfMaBN, 1, 0);
-           TTBenhNhan.add(lb_ten, 0, 1);
-           TTBenhNhan.add(tfTen, 1, 1);
-           TTBenhNhan.add(lb_ngaysinh, 0, 2);
-           TTBenhNhan.add(dpNgaysinh, 1, 2);
-           TTBenhNhan.add(lb_gioitinh, 0, 3);
-           TTBenhNhan.add(cmbGioitinh, 1, 3);
-           TTBenhNhan.add(lb_sdt, 0, 4);
-           TTBenhNhan.add(tfSdt, 1, 4);
-           TTBenhNhan.add(lb_diachi, 0, 5);
-           TTBenhNhan.add(tfDiachi, 1, 5);
-           TTBenhNhan.add(lb_nhom, 0, 6);
-           TTBenhNhan.add(cmbNhom, 1, 6);
-           TTBenhNhan.add(txt_result, 0, 7, 2 ,1);
-           TTBenhNhan.add(btnHoanTat, 0, 8);
-           TTBenhNhan.add(btnBoQua, 1, 8);
+           TTBenhNhan.add(lb_ten, 0, 0);
+           TTBenhNhan.add(tfTen, 1, 0);
+           TTBenhNhan.add(lb_ngaysinh, 0, 1);
+           TTBenhNhan.add(dpNgaysinh, 1, 1);
+           TTBenhNhan.add(lb_gioitinh, 0, 2);
+           TTBenhNhan.add(cmbGioitinh, 1, 2);
+           TTBenhNhan.add(lb_sdt, 0, 3);
+           TTBenhNhan.add(tfSdt, 1, 3);
+           TTBenhNhan.add(lb_diachi, 0, 4);
+           TTBenhNhan.add(tfDiachi, 1, 4);
+           TTBenhNhan.add(lb_nhom, 0, 5);
+           TTBenhNhan.add(cmbNhom, 1, 5);
+           TTBenhNhan.add(txt_result, 0, 6, 2 ,1);
+           TTBenhNhan.add(btnHoanTat, 0, 7);
+           TTBenhNhan.add(btnBoQua, 1, 7);
            Scene_Child = new Scene(TTBenhNhan,400,500);
        }
     public StackPane CreateCatalogItem(String content)

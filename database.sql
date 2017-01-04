@@ -110,6 +110,8 @@ CREATE TABLE `Don_Thuoc`
 	`Chan_Doan` VARCHAR(100),
 	`Loi_Dan` VARCHAR(100),
 	`Ngay_Lap` DATE,
+	`Nguoi_Lap` VARCHAR(100),
+	`Tong_Tien` DOUBLE UNSIGNED,
 	PRIMARY KEY(`Ma_Don_Thuoc`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

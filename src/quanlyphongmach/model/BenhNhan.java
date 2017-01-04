@@ -21,23 +21,13 @@ public class BenhNhan {
     private SimpleStringProperty Nhom;
     
     public BenhNhan(){
-        this.Ten = new SimpleStringProperty(null);
-        this.Gioi_Tinh = new SimpleStringProperty(null);
-        this.MaBN = new SimpleStringProperty(null);
-        this.Ngay_Sinh = new SimpleStringProperty(null);
-        this.SDT = new SimpleStringProperty(null);
-        this.Dia_Chi = new SimpleStringProperty(null);
-        this.Nhom = new SimpleStringProperty(null);
-    }
-    public BenhNhan(String Ten, String Gioi_Tinh)
-    {
-        this.Ten = new SimpleStringProperty(Ten);
-        this.Gioi_Tinh = new SimpleStringProperty(Gioi_Tinh);
-        this.MaBN = new SimpleStringProperty(null);
-        this.Ngay_Sinh = new SimpleStringProperty(null);
-        this.SDT = new SimpleStringProperty(null);
-        this.Dia_Chi = new SimpleStringProperty(null);
-        this.Nhom = new SimpleStringProperty(null);
+        this.Ten = new SimpleStringProperty("");
+        this.Gioi_Tinh = new SimpleStringProperty("");
+        this.MaBN = new SimpleStringProperty("");
+        this.Ngay_Sinh = new SimpleStringProperty("");
+        this.SDT = new SimpleStringProperty("");
+        this.Dia_Chi = new SimpleStringProperty("");
+        this.Nhom = new SimpleStringProperty("");
     }
     public BenhNhan(String MaBN, String Ten,String Ngay_Sinh, String Gioi_Tinh, String SDT, String Dia_Chi, String Nhom){
         this.Ten = new SimpleStringProperty(Ten);
