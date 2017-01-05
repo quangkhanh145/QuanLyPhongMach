@@ -5,7 +5,9 @@
  */
 package quanlyphongmach;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -190,9 +192,51 @@ public class KeToaPanel extends Scene{
         content_QuaTrinhDieuTri.setPadding(new Insets(10,0,10,7));
         content_QuaTrinhDieuTri.setHgap(5);
         content_QuaTrinhDieuTri.setVgap(5);
-        txt_content1.setText("Ở đây sẽ hiển thị các toa cũ (bệnh sử) của bệnh nhân để bác sĩ chọn làm mẫu khi kê toa mới.");
-        content_QuaTrinhDieuTri.getChildren().add(txt_content1);
+        
         QuaTrinhDieuTri.getChildren().addAll(CreateTaskbar("Quá trình điều trị",""),content_QuaTrinhDieuTri);
+        if(benhnhan != null)
+        {
+            String sql_lichsubenh = "SELECT Chan_Doan, Loi_Dan, Ngay_Lap FROM don_thuoc WHERE MaBN = '"+benhnhan.getMaBN()+"' ORDER BY Ma_Don_Thuoc ASC";
+            crs = conn.getCRS(sql_lichsubenh);
+            try {
+                if(crs.isBeforeFirst())
+                {
+                    while(crs.next())
+                    {
+                        Rectangle rec = new Rectangle(83,30);
+                        rec.getStyleClass().add("icon-2");
+                        rec.setFill(Color.web("#C0C0C0"));
+                        Date ngaykham = crs.getDate("Ngay_Lap");
+                        DateFormat dateFormat = new SimpleDateFormat("DD/MM/yyyy");
+                        String str_ngaykham = dateFormat.format(ngaykham).toString();
+                        String str_chandoan = crs.getString("Chan_Doan");
+                        String str_loidan = crs.getString("Loi_Dan");
+                        Text txt = new Text(str_ngaykham);
+                        txt.setFill(Color.web("#000000"));
+                        txt.setFont(Font.font("Arial", FontWeight.EXTRA_LIGHT, 12));
+                        txt.setMouseTransparent(true);
+                        txt.setWrappingWidth(83);
+
+                        StackPane stack1 = new StackPane();
+                        
+                        stack1.getChildren().addAll(rec, txt);
+                        stack1.setMargin(txt,new Insets(3,0,0,5));
+                        stack1.setAlignment(Pos.CENTER_LEFT);
+                        content_QuaTrinhDieuTri.getChildren().add(stack1);
+                        
+                        rec.setOnMouseClicked(e->{
+                            
+                        });
+                        
+                    }
+                }else{
+                    content_QuaTrinhDieuTri.getChildren().add(txt_content1);
+                    txt_content1.setText("Ở đây sẽ hiển thị các toa cũ (bệnh sử) của bệnh nhân để bác sĩ chọn làm mẫu khi kê toa mới.");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(KeToaPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         
         //box diễn tiến bệnh
         VBox DienTienBenh = new VBox(0);
@@ -204,9 +248,9 @@ public class KeToaPanel extends Scene{
         content_DienTienBenh.setPadding(new Insets(10,0,10,7));
         content_DienTienBenh.setHgap(5);
         content_DienTienBenh.setVgap(5);
-        txt_content2.setText("Ở đây sẽ hiển thị các thông tin diễn tiến bệnh của bệnh nhân. Nhấp chuột vào nút `Thêm` để thêm mới diễn tiến bệnh.");
         content_DienTienBenh.getChildren().add(txt_content2);
         DienTienBenh.getChildren().addAll(CreateTaskbar("Diễn tiến bệnh","Thêm"),content_DienTienBenh);
+        txt_content2.setText("Ở đây sẽ hiển thị các thông tin diễn tiến bệnh của bệnh nhân. Nhấp chuột vào nút `Thêm` để thêm mới diễn tiến bệnh.");
         
         //box thuốc
         VBox Thuoc = new VBox(0);
@@ -547,7 +591,6 @@ public class KeToaPanel extends Scene{
                                 + "'"+thuoc.getCach_Dung()+"'),";
                     }
                     insert_sql = insert_sql.substring(0, insert_sql.length() - 1);
-                    System.out.print(insert_sql);
                     if(conn.getPS(insert_sql) != 0)
                     {
                         SceneController.setDonThuocPanel();
