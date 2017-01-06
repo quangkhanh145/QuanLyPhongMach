@@ -204,3 +204,48 @@ INSERT INTO `Dich_Vu`(Ten_DV, Don_Gia, Mo_Ta, Nhom) VALUES
 ('Khám sức khoẻ tổng quát định kỳ','90000','Khám sức khoẻ tổng quát định kỳ',''),
 ('Khám bệnh thông thường','70000','Khám bệnh thông thường',''),
 ('Khám tư vấn Bác sỹ','20000','Khám tư vấn Bác sỹ','');
+/*===================bảng hoá đơn===========================*/
+CREATE TABLE `Hoa_Don`
+(
+	`Ma_Hoa_Don` VARCHAR(20) NOT NULL DEFAULT '0',
+	`MaBN` VARCHAR(20) NOT NULL,
+	`Ngay_Lap` DATE,
+	`Nguoi_Lap` VARCHAR(20),
+	`Tong_Tien` DOUBLE UNSIGNED,
+	PRIMARY KEY(Ma_Hoa_Don)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `Hoa_Don_seq`
+(
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+/*===============================================================*/
+/*===================Trigger tự động tăng id cho hoá đơn===========================*/
+DELIMITER $$
+CREATE TRIGGER `Hoa_Don_insert`
+BEFORE INSERT ON `Hoa_Don`
+FOR EACH ROW
+BEGIN
+  INSERT INTO `Hoa_Don_seq` VALUES (NULL);
+  SET NEW.Ma_Hoa_Don = CONCAT('HD', LPAD(LAST_INSERT_ID(), 10, '0'));
+END$$
+DELIMITER ;
+/*==================================================================================*/
+/*===================bảng Chi tiết đơn thuốc===========================*/
+CREATE TABLE `Chi_Tiet_Hoa_Don_Don_Thuoc`
+(
+	`Ma_Hoa_Don` VARCHAR(20) NOT NULL,
+	`Ma_Thuoc` VARCHAR(20) NOT NULL,
+	`So_Luong` INT UNSIGNED,
+	`Gia_Ban` DOUBLE UNSIGNED,
+	PRIMARY KEY(`Ma_Hoa_Don`,`Ma_Thuoc`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*=====================================================================*/
+/*===================bảng Chi tiết đơn thuốc===========================*/
+CREATE TABLE `Chi_Tiet_Hoa_Don_Dich_Vu`
+(
+	`Ma_Hoa_Don` VARCHAR(20) NOT NULL,
+	`Ma_DV` VARCHAR(20) NOT NULL,
+	`Don_Gia` DOUBLE UNSIGNED,
+	PRIMARY KEY(`Ma_Hoa_Don`,`Ma_DV`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*=====================================================================*/
