@@ -40,6 +40,7 @@ public class SceneController {
     }
     public static void setDangNhapPanel()
     {
+        
         QuanLyPhongMach.getstage().setScene(dangnhap);
         QuanLyPhongMach.getstage().setHeight(335);
         QuanLyPhongMach.getstage().setWidth(450);

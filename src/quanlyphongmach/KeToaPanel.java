@@ -38,6 +38,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
@@ -56,6 +57,7 @@ import javafx.scene.text.Text;
 import javax.sql.rowset.CachedRowSet;
 import quanlyphongmach.model.BenhNhan;
 import quanlyphongmach.model.ChiTietDonThuoc;
+import quanlyphongmach.model.DienTienBenh;
 import quanlyphongmach.model.Thuoc;
 
 /**
@@ -69,8 +71,12 @@ public class KeToaPanel extends Scene{
     private BenhNhan benhnhan;
     private TableView tb_thongtinthuoc;
     private Text txt_total;
+    private TextArea ta_loidan;
+    private TextField tf_chandoan;
+    private FlowPane content_DienTienBenh;
     private final ObservableList<Thuoc> thuoc = FXCollections.observableArrayList();
     private final ObservableList<ChiTietDonThuoc> ct_donthuoc = FXCollections.observableArrayList();
+    private final ObservableList<DienTienBenh> ds_dientienbenh = FXCollections.observableArrayList();
     public KeToaPanel()
     {
         super(Scene);
@@ -182,6 +188,7 @@ public class KeToaPanel extends Scene{
         Text txt_content2 = new Text();
         txt_content2.setFont(Font.font(13));
         txt_content2.setWrappingWidth(350);
+        txt_content2.setText("Ở đây sẽ hiển thị các thông tin diễn tiến bệnh của bệnh nhân. Nhấp chuột vào nút `Thêm` để thêm mới diễn tiến bệnh.");
         //box quá trình điều trị
         VBox QuaTrinhDieuTri = new VBox(0);
         QuaTrinhDieuTri.setPrefWidth(350);
@@ -193,10 +200,10 @@ public class KeToaPanel extends Scene{
         content_QuaTrinhDieuTri.setHgap(5);
         content_QuaTrinhDieuTri.setVgap(5);
         
-        QuaTrinhDieuTri.getChildren().addAll(CreateTaskbar("Quá trình điều trị",""),content_QuaTrinhDieuTri);
+        QuaTrinhDieuTri.getChildren().addAll(CreateTaskbar("Quá trình điều trị"),content_QuaTrinhDieuTri);
         if(benhnhan != null)
         {
-            String sql_lichsubenh = "SELECT Chan_Doan, Loi_Dan, Ngay_Lap FROM don_thuoc WHERE MaBN = '"+benhnhan.getMaBN()+"' ORDER BY Ma_Don_Thuoc ASC";
+            String sql_lichsubenh = "SELECT Ma_Don_Thuoc, Chan_Doan, Loi_Dan, Ngay_Lap FROM don_thuoc WHERE MaBN = '"+benhnhan.getMaBN()+"' ORDER BY Ma_Don_Thuoc ASC";
             crs = conn.getCRS(sql_lichsubenh);
             try {
                 if(crs.isBeforeFirst())
@@ -211,6 +218,7 @@ public class KeToaPanel extends Scene{
                         String str_ngaykham = dateFormat.format(ngaykham).toString();
                         String str_chandoan = crs.getString("Chan_Doan");
                         String str_loidan = crs.getString("Loi_Dan");
+                        String str_madonthuoc = crs.getString("Ma_Don_Thuoc");
                         Text txt = new Text(str_ngaykham);
                         txt.setFill(Color.web("#000000"));
                         txt.setFont(Font.font("Arial", FontWeight.EXTRA_LIGHT, 12));
@@ -225,7 +233,36 @@ public class KeToaPanel extends Scene{
                         content_QuaTrinhDieuTri.getChildren().add(stack1);
                         
                         rec.setOnMouseClicked(e->{
-                            
+                            try {
+                                ct_donthuoc.clear();
+                                String sql_ctdonthuoc = "SELECT Chi_Tiet_Don_Thuoc.Ma_Thuoc, So_Luong, Chi_Tiet_Don_Thuoc.Gia_Ban, Ten_Thuoc, Don_Vi, Cach_Dung FROM Chi_Tiet_Don_Thuoc "
+                                        + "INNER JOIN Don_Thuoc ON Chi_Tiet_Don_Thuoc.Ma_Don_Thuoc = Don_Thuoc.Ma_Don_Thuoc "
+                                        + "INNER JOIN Thuoc ON Chi_Tiet_Don_Thuoc.Ma_Thuoc = Thuoc.Ma_Thuoc WHERE Don_Thuoc.Ma_Don_Thuoc='"+str_madonthuoc+"'";
+                                System.out.print(sql_ctdonthuoc);
+                                crs = conn.getCRS(sql_ctdonthuoc);
+                                while(crs.next())
+                                {
+                                    ChiTietDonThuoc ct = new ChiTietDonThuoc();
+                                    String mathuoc = crs.getString("Ma_Thuoc");
+                                    String tenthuoc = crs.getString("Ten_Thuoc");
+                                    int soluong = crs.getInt("So_Luong");
+                                    String donvi = crs.getString("Don_Vi");
+                                    String cachdung = crs.getString("Cach_Dung");
+                                    Double giaban = crs.getDouble("Gia_Ban");
+                                    ct.setMa_Thuoc(mathuoc);
+                                    ct.setTen_Thuoc(tenthuoc);
+                                    ct.setSo_Luong(soluong);
+                                    ct.setDon_Vi(donvi);
+                                    ct.setCach_Dung(cachdung);
+                                    ct.setGia_Ban(giaban);
+                                    ct_donthuoc.add(ct);
+                                    txt_total.setText(updateTienThuoc().toString());
+                                }
+                                tf_chandoan.setText(str_chandoan);
+                                ta_loidan.setText(str_loidan);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(KeToaPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         });
                         
                     }
@@ -241,16 +278,91 @@ public class KeToaPanel extends Scene{
         //box diễn tiến bệnh
         VBox DienTienBenh = new VBox(0);
         DienTienBenh.setPrefWidth(350);
-        FlowPane content_DienTienBenh = new FlowPane();
+        content_DienTienBenh = new FlowPane();
         content_DienTienBenh.getStyleClass().add("content");
         content_DienTienBenh.setPrefHeight(200);
-        content_DienTienBenh.setPrefWrapLength(350);
+        content_DienTienBenh.setPrefWrapLength(340);
         content_DienTienBenh.setPadding(new Insets(10,0,10,7));
         content_DienTienBenh.setHgap(5);
         content_DienTienBenh.setVgap(5);
-        content_DienTienBenh.getChildren().add(txt_content2);
-        DienTienBenh.getChildren().addAll(CreateTaskbar("Diễn tiến bệnh","Thêm"),content_DienTienBenh);
-        txt_content2.setText("Ở đây sẽ hiển thị các thông tin diễn tiến bệnh của bệnh nhân. Nhấp chuột vào nút `Thêm` để thêm mới diễn tiến bệnh.");
+        HBox taskbar_dientienbenh = CreateTaskbar("Diễn tiến bệnh");
+        Text btn_them = new Text("Thêm");
+        btn_them.getStyleClass().add("txt-button-tt");
+        StackPane stack_dtbenh = new StackPane();
+        stack_dtbenh.getChildren().add(btn_them);
+        stack_dtbenh.setAlignment(Pos.CENTER_RIGHT);
+        taskbar_dientienbenh.getChildren().add(stack_dtbenh);
+        taskbar_dientienbenh.setHgrow(stack_dtbenh, Priority.ALWAYS);
+        DienTienBenh.getChildren().addAll(taskbar_dientienbenh,content_DienTienBenh);
+        if(benhnhan != null)
+        {
+            loadDsDienTienBenh();
+        }
+        if(content_DienTienBenh.getChildren().isEmpty())
+        {
+            content_DienTienBenh.getChildren().add(txt_content2);
+        }
+        btn_them.setOnMouseClicked(e->{
+            content_DienTienBenh.getChildren().remove(txt_content2);
+            TextField tf_dtbenh = new TextField();
+            tf_dtbenh.setPrefWidth(335);
+            tf_dtbenh.setFont(Font.font(13.5));
+            tf_dtbenh.setOnKeyPressed(ev->{
+                if(ev.getCode() == KeyCode.ENTER)
+                {
+                    if(tf_dtbenh.getText().length() == 0)
+                    {
+                        content_DienTienBenh.getChildren().remove(tf_dtbenh);
+                        if(content_DienTienBenh.getChildren().isEmpty())
+                        {
+                            content_DienTienBenh.getChildren().add(txt_content2);
+                        }
+                        return;
+                    }
+                    DienTienBenh dtb = new DienTienBenh();
+                    String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-DD"));
+                    dtb.setGhiChu(tf_dtbenh.getText());
+                    dtb.setNgayKham(date);
+                    dtb.setMaBN(benhnhan.getMaBN());
+                    ds_dientienbenh.add(dtb);
+                    
+                    Rectangle rec = new Rectangle(335,54);
+                    rec.getStyleClass().add("icon-2");
+                    rec.setFill(Color.web("#C0C0C0"));
+                    Rectangle icon_delete = CreateIcon(7,7,"/images/subtract.png");
+                    icon_delete.getStyleClass().add("icon");
+                    Text txt_ghichu = new Text(dtb.getGhiChu());
+                    Text txt_ngaykham = new Text(LocalDateTime.now().format(DateTimeFormatter.ofPattern("DD/MM/yyyy")));
+                    txt_ghichu.setFill(Color.web("#000000"));
+                    txt_ghichu.setFont(Font.font("Arial", FontWeight.EXTRA_LIGHT, 14));
+                    txt_ghichu.setMouseTransparent(true);
+                    txt_ngaykham.setFill(Color.web("#000000"));
+                    txt_ngaykham.setFont(Font.font("Arial", FontWeight.EXTRA_LIGHT, 13));
+                    txt_ngaykham.setMouseTransparent(true);
+
+                    StackPane stack = new StackPane();
+                    stack.getChildren().addAll(rec, txt_ghichu, txt_ngaykham,icon_delete);
+                    stack.setAlignment(Pos.CENTER_LEFT);
+                    stack.setMargin(txt_ghichu,new Insets(-20,0,0,5));
+                    stack.setMargin(txt_ngaykham,new Insets(20,0,0,5));
+                    stack.setMargin(icon_delete,new Insets(-20,15,0,320));
+                    content_DienTienBenh.getChildren().add(0,stack);   
+                    
+                    icon_delete.setOnMouseClicked(event->{
+                        content_DienTienBenh.getChildren().remove(stack);
+                        ds_dientienbenh.remove(dtb);
+                        if(content_DienTienBenh.getChildren().isEmpty())
+                            {
+                                content_DienTienBenh.getChildren().add(txt_content2);
+                            }
+                    });
+                    content_DienTienBenh.getChildren().remove(tf_dtbenh);
+                }
+            });
+            content_DienTienBenh.getChildren().add(0,tf_dtbenh);
+            tf_dtbenh.requestFocus();
+        });
+        
         
         //box thuốc
         VBox Thuoc = new VBox(0);
@@ -262,7 +374,7 @@ public class KeToaPanel extends Scene{
         content_Thuoc.setPadding(new Insets(10,0,10,7));
         content_Thuoc.setHgap(5);
         content_Thuoc.setVgap(5);
-        Thuoc.getChildren().addAll(CreateTaskbar("Thuốc",""),content_Thuoc);
+        Thuoc.getChildren().addAll(CreateTaskbar("Thuốc"),content_Thuoc);
         
         
         //box các nhóm thuốc
@@ -275,7 +387,7 @@ public class KeToaPanel extends Scene{
         content_CacNhomThuoc.setPadding(new Insets(10,0,10,7));
         content_CacNhomThuoc.setHgap(5);
         content_CacNhomThuoc.setVgap(5);
-        CacNhomThuoc.getChildren().addAll(CreateTaskbar("Các nhóm thuốc",""),content_CacNhomThuoc);
+        CacNhomThuoc.getChildren().addAll(CreateTaskbar("Các nhóm thuốc"),content_CacNhomThuoc);
         crs = conn.getCRS(sql_thuoc);
         try {
             if(crs.isBeforeFirst())
@@ -362,7 +474,7 @@ public class KeToaPanel extends Scene{
         flow_pane.getChildren().addAll(QuaTrinhDieuTri, DienTienBenh, CacNhomThuoc, Thuoc);
         return flow_pane;
     }
-    public HBox CreateTaskbar(String title, String button)
+    public HBox CreateTaskbar(String title)
     {
         HBox hbox = new HBox(10);
         hbox.setPrefHeight(30);
@@ -373,16 +485,6 @@ public class KeToaPanel extends Scene{
         Text txt_title = new Text(title);
         txt_title.getStyleClass().add("title");
         hbox.getChildren().addAll(icon, txt_title);
-        if(button.length()!=0)
-        {
-            Text btn = new Text(button);
-            btn.getStyleClass().add("txt-button-tt");
-            StackPane stack = new StackPane();
-            stack.getChildren().add(btn);
-            stack.setAlignment(Pos.CENTER_RIGHT);
-            hbox.getChildren().add(stack);
-            hbox.setHgrow(stack, Priority.ALWAYS);
-        }
         return hbox;
     }
     public Rectangle CreateIcon(int width, int height, String path)
@@ -428,7 +530,7 @@ public class KeToaPanel extends Scene{
         Text txt_dt = new Text();
         Text txt_diachi = new Text();
         Text txt_gioitinh = new Text();
-        TextField tf_chandoan = new TextField();
+        tf_chandoan = new TextField();
         tf_chandoan.getStyleClass().add("textfield-donthuoc");
         tf_chandoan.setPrefWidth(350);
         
@@ -511,7 +613,7 @@ public class KeToaPanel extends Scene{
         grid_footer.setHgap(80);
         Text txt_loidan = new Text("Lời dặn");
         txt_loidan.getStyleClass().add("label-donthuoc");
-        TextArea ta_loidan = new TextArea();
+        ta_loidan = new TextArea();
         ta_loidan.setWrapText(true);
         ta_loidan.setFont(Font.font(13.5));
         ta_loidan.setPrefSize(200, 100);
@@ -566,6 +668,36 @@ public class KeToaPanel extends Scene{
         
         save.setOnAction(e->{
             try {
+                if(ct_donthuoc.isEmpty())
+                {
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Vui lòng chọn thuốc!");
+                    alert.showAndWait();
+                    return;
+                }
+                if(!ds_dientienbenh.isEmpty())
+                {   
+                    String sql_dtb = "INSERT INTO `Dien_Tien_Benh` VALUES ";
+                    for(DienTienBenh dientienbenh : ds_dientienbenh)
+                    {
+                        sql_dtb += "('',"
+                                + "'"+benhnhan.getMaBN()+"',"
+                                + "'"+dientienbenh.getGhiChu()+"',"
+                                + "'"+dientienbenh.getNgayKham()+"'),";  
+                    }
+                    sql_dtb = sql_dtb.substring(0, sql_dtb.length() - 1);
+                    if(conn.getPS(sql_dtb) == 0)
+                        {
+                            Alert alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("Error Dialog");
+                            alert.setHeaderText(null);
+                            alert.setContentText("Ooops, there was an error!");
+                            alert.showAndWait();
+                        }
+                    ds_dientienbenh.clear();
+                }
                 String sql = "INSERT INTO `don_thuoc` VALUES ('',"
                         + "'"+benhnhan.getMaBN()+"',"
                         + "'"+tf_chandoan.getText()+"',"
@@ -587,8 +719,7 @@ public class KeToaPanel extends Scene{
                                 +"'"+madonthuoc+"',"
                                 + "'"+thuoc.getMa_Thuoc()+"',"
                                 + "'"+thuoc.getSo_Luong()+"',"
-                                + "'"+thuoc.getGia_Ban()+"',"
-                                + "'"+thuoc.getCach_Dung()+"'),";
+                                + "'"+thuoc.getGia_Ban()+"'),";
                     }
                     insert_sql = insert_sql.substring(0, insert_sql.length() - 1);
                     if(conn.getPS(insert_sql) != 0)
@@ -602,6 +733,8 @@ public class KeToaPanel extends Scene{
                         alert.showAndWait();
                     }
                 }
+                
+                
             } catch (SQLException ex) {
                 Logger.getLogger(KeToaPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -620,4 +753,42 @@ public class KeToaPanel extends Scene{
         }
         return tienthuoc;
     }
+    public void loadDsDienTienBenh()
+    {
+        String sql_dientienbenh = "SELECT GhiChu, NgayKham FROM Dien_Tien_Benh WHERE MaBN='"+benhnhan.getMaBN()+"' "
+                    + "ORDER BY Ma DESC;";
+            crs = conn.getCRS(sql_dientienbenh);
+            try {
+                if(!crs.isBeforeFirst())
+                {
+                    return;
+                }
+                while(crs.next())
+                {
+                    String dtb_ghichu = crs.getString("GhiChu");
+                    String dtb_ngaykham = crs.getString("NgayKham");                   
+                    Rectangle rec = new Rectangle(335,54);
+                    rec.getStyleClass().add("icon-2");
+                    rec.setFill(Color.web("#C0C0C0"));
+                    Text txt_ghichu = new Text(dtb_ghichu);
+                    Text txt_ngaykham = new Text(dtb_ngaykham);
+                    txt_ghichu.setFill(Color.web("#000000"));
+                    txt_ghichu.setFont(Font.font("Arial", FontWeight.EXTRA_LIGHT, 14));
+                    txt_ghichu.setMouseTransparent(true);
+                    txt_ngaykham.setFill(Color.web("#000000"));
+                    txt_ngaykham.setFont(Font.font("Arial", FontWeight.EXTRA_LIGHT, 13));
+                    txt_ngaykham.setMouseTransparent(true);
+
+                    StackPane stack = new StackPane();
+                    stack.getChildren().addAll(rec, txt_ghichu, txt_ngaykham);
+                    stack.setAlignment(Pos.CENTER_LEFT);
+                    stack.setMargin(txt_ghichu,new Insets(-15,0,0,5));
+                    stack.setMargin(txt_ngaykham,new Insets(20,0,0,5));
+                    content_DienTienBenh.getChildren().add(stack);   
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(KeToaPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+    
 }

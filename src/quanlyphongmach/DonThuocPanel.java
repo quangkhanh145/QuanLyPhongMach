@@ -8,29 +8,37 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javax.sql.rowset.CachedRowSet;
-import quanlyphongmach.model.DSDonThuoc;
+import quanlyphongmach.model.DonThuoc;
 
 /**
  *
@@ -38,7 +46,7 @@ import quanlyphongmach.model.DSDonThuoc;
  */
 public class DonThuocPanel extends Scene{
     private static BorderPane Scene = new BorderPane();
-    private ObservableList<DSDonThuoc> ds_DonThuoc = FXCollections.observableArrayList();
+    private ObservableList<DonThuoc> ds_DonThuoc = FXCollections.observableArrayList();
     private ConnectToDatabase conn = new ConnectToDatabase();
     private CachedRowSet crs;
     public DonThuocPanel()
@@ -168,20 +176,43 @@ public class DonThuocPanel extends Scene{
         nguoiLapCol.setPrefWidth(120);
         TableColumn ngayLapCol = new TableColumn("Ngày lập");
         ngayLapCol.setPrefWidth(120);
-        TableColumn chucNangCol = new TableColumn("Chức năng");
+        TableColumn<DonThuoc,DonThuoc> chucNangCol = new TableColumn("Chức năng");
         chucNangCol.setPrefWidth(100);
         
         tbDanhSachToaThuoc.getColumns().addAll(maCol, tenCol, tuoiCol, chanDoanCol, tongtienCol, nguoiLapCol, ngayLapCol, chucNangCol);
         tbDanhSachToaThuoc.setItems(ds_DonThuoc);
         
-        maCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Ma_Don_Thuoc"));
-        tenCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Ten_Benh_Nhan"));
-        tuoiCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,Integer>("Tuoi"));
-        chanDoanCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Chan_Doan"));
-        tongtienCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,Double>("Tong_Tien"));
-        nguoiLapCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Nguoi_Lap"));
-        ngayLapCol.setCellValueFactory(new PropertyValueFactory<DSDonThuoc,String>("Ngay_Lap"));
-        
+        maCol.setCellValueFactory(new PropertyValueFactory<DonThuoc,String>("Ma_Don_Thuoc"));
+        tenCol.setCellValueFactory(new PropertyValueFactory<DonThuoc,String>("Ten_Benh_Nhan"));
+        tuoiCol.setCellValueFactory(new PropertyValueFactory<DonThuoc,Integer>("Tuoi"));
+        chanDoanCol.setCellValueFactory(new PropertyValueFactory<DonThuoc,String>("Chan_Doan"));
+        tongtienCol.setCellValueFactory(new PropertyValueFactory<DonThuoc,Double>("Tong_Tien"));
+        nguoiLapCol.setCellValueFactory(new PropertyValueFactory<DonThuoc,String>("Nguoi_Lap"));
+        ngayLapCol.setCellValueFactory(new PropertyValueFactory<DonThuoc,String>("Ngay_Lap"));
+        chucNangCol.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(column.getValue()));
+        chucNangCol.setCellFactory(column -> new TableCell<DonThuoc, DonThuoc>(){
+            @Override
+            protected void updateItem(DonThuoc donthuoc, boolean empty)
+            {
+                super.updateItem(donthuoc, empty);
+                if(donthuoc == null){
+                    setGraphic(null);
+                    return;
+                }
+                HBox hb_chucnang = new HBox(10);
+                hb_chucnang.setAlignment(Pos.CENTER);
+                
+                Rectangle icon_Xoa = CreateIcon(16,16,"/images/icon-trash.png");
+                Tooltip.install(icon_Xoa, new Tooltip("Xoá"));
+                
+                icon_Xoa.setOnMousePressed(e->{
+                    XoaDonThuoc(donthuoc);
+                });
+
+                hb_chucnang.getChildren().addAll(icon_Xoa);
+                setGraphic(hb_chucnang);
+            }
+        });
         
         VBox table = new VBox(10);
         table.setPadding(new Insets(15, 10, 15, 20));
@@ -210,7 +241,7 @@ public class DonThuocPanel extends Scene{
             crs = conn.getCRS(sql);
             while(crs.next())
             {
-                DSDonThuoc ds = new DSDonThuoc();
+                DonThuoc ds = new DonThuoc();
                 ds.setMa_Don_Thuoc(crs.getString("Ma_Don_Thuoc"));
                 ds.setTen_Benh_Nhan(crs.getString("Ten"));
                 ds.setChan_Doan(crs.getString("Chan_Doan"));
@@ -231,4 +262,27 @@ public class DonThuocPanel extends Scene{
             Logger.getLogger(DonThuocPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public Rectangle CreateIcon(int width, int height, String path)
+    {
+        Rectangle rec = new Rectangle(width,height);
+        rec.getStyleClass().add("icon");
+        Image img = new Image(path);
+        ImagePattern imgpn = new ImagePattern(img);
+        rec.setFill(imgpn);
+        return rec;
+    }
+    public void XoaDonThuoc(DonThuoc donthuoc)
+       {
+           Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+           alert.setTitle("Xác nhận");
+           alert.setHeaderText(null);
+           alert.setContentText("Bạn chắc chắn muốn xoá Đơn thuốc "+donthuoc.getMa_Don_Thuoc()+"?");
+           Optional<ButtonType> result = alert.showAndWait();
+           if(result.get() == ButtonType.OK)
+                    {
+                        ds_DonThuoc.remove(donthuoc);
+                        String sql = "DELETE FROM Don_Thuoc WHERE Ma_Don_Thuoc='"+donthuoc.getMa_Don_Thuoc()+"';";
+                        conn.update(sql);
+                    }
+       }    
 }

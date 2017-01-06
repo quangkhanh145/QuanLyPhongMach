@@ -20,6 +20,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
@@ -39,6 +40,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax.sql.rowset.CachedRowSet;
 import quanlyphongmach.model.BenhNhan;
+import quanlyphongmach.model.DichVu;
 import quanlyphongmach.model.Thuoc;
 
 /**
@@ -54,6 +56,7 @@ public class ThuocPanel extends Scene{
     private Scene Scene_Child;
     private final ObservableList<Thuoc> ds_thuoc = FXCollections.observableArrayList();
     private final ObservableList<String> ds_nhom = FXCollections.observableArrayList();
+    private final ObservableList<DichVu> ds_dichvu = FXCollections.observableArrayList();
     public ThuocPanel()
     {
         super(Scene);
@@ -456,27 +459,59 @@ public class ThuocPanel extends Scene{
     
     private VBox tableDichVu()
     {
+        load_DSDichVu();
         TableView tbDichVu = new TableView();
         tbDichVu.setEditable(false);
-        TableColumn maSo = new TableColumn("Mã số");
-        maSo.setPrefWidth(80);
         TableColumn TenDV = new TableColumn("Tên dịch vụ");
-        TenDV.setPrefWidth(120);
-        TableColumn donViTinh = new TableColumn("Đơn vị tính");
-        donViTinh.setPrefWidth(80);
+        TenDV.setPrefWidth(200);
         TableColumn donGia = new TableColumn("Đơn giá");
-        donGia.setPrefWidth(80);
-        TableColumn soLuongMacDinh = new TableColumn("Số lượng mặc định");
-        soLuongMacDinh.setPrefWidth(120);
+        donGia.setPrefWidth(100);
         TableColumn moTa = new TableColumn("Mô tả");
-        moTa.setPrefWidth(120);
+        moTa.setPrefWidth(200);
         TableColumn nhom = new TableColumn("Nhóm");
-        nhom.setPrefWidth(80);
-        TableColumn chucNang = new TableColumn("Chức năng");
+        nhom.setPrefWidth(100);
+        TableColumn<DichVu, DichVu> chucNang = new TableColumn("Chức năng");
         chucNang.setPrefWidth(80);
         
-        tbDichVu.getColumns().addAll(maSo, TenDV, donViTinh, donGia,
-                soLuongMacDinh, moTa, nhom, chucNang);
+        TenDV.setCellValueFactory(new PropertyValueFactory<DichVu,String>("Ten_DV"));
+        donGia.setCellValueFactory(new PropertyValueFactory<DichVu,Double>("Don_Gia"));
+        moTa.setCellValueFactory(new PropertyValueFactory<DichVu,String>("Mo_Ta"));
+        nhom.setCellValueFactory(new PropertyValueFactory<DichVu,String>("Nhom"));
+        chucNang.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(column.getValue()));
+        chucNang.setCellFactory(column -> new TableCell<DichVu, DichVu>()
+        {
+            @Override
+            protected void updateItem(DichVu dichvu, boolean empty)
+            {
+                super.updateItem(dichvu, empty);
+                if(dichvu == null){
+                    setGraphic(null);
+                    return;
+                }
+                HBox hb_chucnang = new HBox(10);
+                hb_chucnang.setAlignment(Pos.CENTER);
+                
+                Rectangle icon_Xoa = CreateIcon(16,16,"/images/icon-trash.png");
+                Tooltip.install(icon_Xoa, new Tooltip("Xoá"));
+                
+                icon_Xoa.setOnMousePressed(e->{
+                    XoaDichVu(dichvu);
+                });
+                
+                Rectangle icon_Sua = CreateIcon(16,16,"/images/action-edit.png");
+                Tooltip.install(icon_Sua, new Tooltip("Sửa thông tin"));
+                
+                icon_Sua.setOnMousePressed(e->{
+                    SuaDichVu(dichvu);
+                });
+
+                hb_chucnang.getChildren().addAll(icon_Xoa);
+                setGraphic(hb_chucnang);
+            }
+        });
+        
+        tbDichVu.getColumns().addAll(TenDV, donGia, moTa, nhom, chucNang);
+        tbDichVu.setItems(ds_dichvu);
         VBox table = new VBox(10);
         table.setPadding(new Insets(15, 10, 15, 20));
         table.getChildren().add(tbDichVu);
@@ -890,6 +925,67 @@ public class ThuocPanel extends Scene{
                     thuoc.setNhom(crs.getString("Nhom"));
                     thuoc.setCachDung(crs.getString("Cach_Dung"));
                     ds_thuoc.add(thuoc);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ThuocPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void XoaDichVu(DichVu dichvu)
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác nhận");
+        alert.setHeaderText(null);
+        alert.setContentText("Bạn chắc chắn muốn xoá dịch vụ "+dichvu.getTen_DV()+"?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() == ButtonType.OK)
+            {
+                ds_dichvu.remove(dichvu);
+                String sql = "DELETE FROM Dich_Vu WHERE Ma_DV='"+dichvu.getMa_DV()+"';";
+                conn.update(sql);
+            }
+    }
+    public void SuaDichVu(DichVu dichvu)
+    {
+        CreateStageSuaDV(dichvu);
+        stage_Child.centerOnScreen();
+        stage_Child.showAndWait();
+    }
+    public void CreateStageSuaDV(DichVu dichvu)
+    {
+        stage_Child = new Stage();
+        stage_Child.setResizable(false);
+        CreateSceneSuaDV(dichvu);
+        stage_Child.setScene(Scene_Child);
+        stage_Child.initModality(Modality.APPLICATION_MODAL);
+        stage_Child.setTitle("Sửa thông tin dịch vụ");
+    }
+
+    private void CreateSceneSuaDV(DichVu dichvu) {
+        
+    }
+    public void load_DSDichVu()
+    {
+        ds_dichvu.clear();
+        sql = "SELECT * FROM Dich_Vu ORDER BY Ma_DV ASC";
+        crs = conn.getCRS(sql);
+        try {
+            if(crs.isBeforeFirst())
+            {
+                while(crs.next())
+                {
+                    DichVu dichvu = new DichVu();
+                    String madv = crs.getString("Ma_DV");
+                    String tendv = crs.getString("Ten_DV");
+                    Double dongia = crs.getDouble("Don_Gia");
+                    String mota = crs.getString("Mo_Ta");
+                    String nhom = crs.getString("Nhom");
+                    dichvu.setMa_DV(madv);
+                    dichvu.setTen_DV(tendv);
+                    dichvu.setDon_Gia(dongia);
+                    dichvu.setMo_Ta(mota);
+                    dichvu.setNhom(nhom);
+                    ds_dichvu.add(dichvu);
                 }
             }
         } catch (SQLException ex) {

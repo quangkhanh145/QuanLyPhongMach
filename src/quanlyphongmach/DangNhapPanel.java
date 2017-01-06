@@ -28,6 +28,8 @@ import javax.sql.rowset.CachedRowSet;
  */
 public class DangNhapPanel extends Scene{
     private static GridPane grid = new GridPane();
+    TextField tf_user;
+    PasswordField pf_pass;
     ConnectToDatabase conn = new ConnectToDatabase();
     public DangNhapPanel()
     {
@@ -42,9 +44,9 @@ public class DangNhapPanel extends Scene{
         btnLogin.setId("btnLogin");
         Label lb_user = new Label("Username: ");
         Label lb_pass = new Label("Password: ");
-        TextField tf_user = new TextField();
+        tf_user = new TextField();
         tf_user.setPromptText("Tên đăng nhập");
-        PasswordField pf_pass = new PasswordField();
+        pf_pass = new PasswordField();
         pf_pass.setPromptText("Mật khẩu");
         Text checkLogin = new Text();
         checkLogin.setId("checklogin");
@@ -75,6 +77,9 @@ public class DangNhapPanel extends Scene{
                 CachedRowSet crs = conn.getCRS(sql);
                 try {
                     if(crs.isBeforeFirst()){
+                        tf_user.clear();
+                        pf_pass.clear();
+                        tf_user.requestFocus();
                         SceneController.setHomePagePanel();
                     }
                     else{

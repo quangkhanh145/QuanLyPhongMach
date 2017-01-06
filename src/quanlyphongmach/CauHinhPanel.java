@@ -1,11 +1,26 @@
 package quanlyphongmach;
 
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -13,16 +28,24 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
+import javax.sql.rowset.CachedRowSet;
 import static quanlyphongmach.NhapKhoPanel.Scene;
+import quanlyphongmach.model.TaiKhoan;
 
 /**
  *
  * @author Quang Khanh
  */
 public class CauHinhPanel extends Scene{
-    static BorderPane Scene = new BorderPane();
+    private static BorderPane Scene = new BorderPane();
+    private ObservableList<TaiKhoan> ds_nguoidung = FXCollections.observableArrayList();
+    String sql;
+    private ConnectToDatabase conn = new ConnectToDatabase();
+    private CachedRowSet crs;
     public CauHinhPanel()
     {
         super(Scene);
@@ -136,11 +159,13 @@ public class CauHinhPanel extends Scene{
     }
     private VBox tb_NguoiDung()
     {
+        load_DSNguoiDung();
         TableView tb = new TableView();
         tb.setEditable(true);
         
         TableColumn stt = new TableColumn("#");
         stt.setPrefWidth(30);
+        stt.setSortable(false);
         TableColumn HoTen= new TableColumn("Họ tên");
         HoTen.setPrefWidth(180);
         TableColumn TenDangNhap= new TableColumn("Tên đăng nhập");
@@ -151,13 +176,49 @@ public class CauHinhPanel extends Scene{
         email.setPrefWidth(150);
         TableColumn NhomNguoiDung= new TableColumn("Nhóm người dùng");
         NhomNguoiDung.setPrefWidth(120);
-        TableColumn NgayLap= new TableColumn("Ngày lập");
-        NgayLap.setPrefWidth(100);
-        TableColumn ChucNang= new TableColumn("Chức năng");
+        TableColumn<TaiKhoan,TaiKhoan> ChucNang= new TableColumn("Chức năng");
         ChucNang.setPrefWidth(80);
         
         tb.getColumns().addAll(stt, HoTen, TenDangNhap, DienThoai,
-                email, NhomNguoiDung, NgayLap, ChucNang);
+                email, NhomNguoiDung, ChucNang);
+        tb.setItems(ds_nguoidung);
+        
+        HoTen.setCellValueFactory(new PropertyValueFactory<TaiKhoan,String>("Ten"));
+        TenDangNhap.setCellValueFactory(new PropertyValueFactory<TaiKhoan,String>("Ten_Dang_Nhap"));
+        DienThoai.setCellValueFactory(new PropertyValueFactory<TaiKhoan,String>("SDT"));
+        email.setCellValueFactory(new PropertyValueFactory<TaiKhoan,String>("Email"));
+        NhomNguoiDung.setCellValueFactory(new PropertyValueFactory<TaiKhoan,String>("Nhom"));
+        ChucNang.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(column.getValue()));
+        ChucNang.setCellFactory(column -> new TableCell<TaiKhoan, TaiKhoan>(){
+            @Override
+            protected void updateItem(TaiKhoan taikhoan, boolean empty)
+            {
+                super.updateItem(taikhoan, empty);
+                if(taikhoan == null){
+                    setGraphic(null);
+                    return;
+                }
+                HBox hb_chucnang = new HBox(10);
+                hb_chucnang.setAlignment(Pos.CENTER);
+                
+                Rectangle icon_Xoa = CreateIcon(16,16,"/images/icon-trash.png");
+                Tooltip.install(icon_Xoa, new Tooltip("Xoá"));
+                
+                icon_Xoa.setOnMousePressed(e->{
+                    XoaNguoiDung(taikhoan);
+                });
+
+                hb_chucnang.getChildren().addAll(icon_Xoa);
+                setGraphic(hb_chucnang);
+            }    
+        });
+        stt.setCellValueFactory(new Callback<CellDataFeatures<TaiKhoan, String>,ObservableValue<String>>(){
+            @Override
+            public ObservableValue<String> call(CellDataFeatures<TaiKhoan, String> p){
+                return new ReadOnlyObjectWrapper(tb.getItems().indexOf(p.getValue()) + "");
+            }
+        });
+        
         VBox vb = new VBox(10);
         vb.setPadding(new Insets(15, 10, 15, 20));
         vb.getChildren().add(tb);
@@ -191,5 +252,57 @@ public class CauHinhPanel extends Scene{
         
         return vbgroup;
     }
-    
+
+    private void load_DSNguoiDung() {
+        ds_nguoidung.clear();
+        sql = "SELECT * FROM Tai_Khoan ORDER BY user_id ASC;";
+        crs = conn.getCRS(sql);
+        try {
+            if(crs.isBeforeFirst())
+            {
+                while(crs.next())                
+                {
+                    TaiKhoan tk = new TaiKhoan();
+                    String tendangnhap = crs.getString("Ten_Dang_Nhap");
+                    String userid = crs.getString("user_id");
+                    String nhom = crs.getString("Nhom");
+                    String ten = crs.getString("Ten");
+                    String sdt = crs.getString("SDT");
+                    String email = crs.getString("Email");
+                    tk.setUser_id(userid);
+                    tk.setTen_Dang_Nhap(tendangnhap);
+                    tk.setNhom(nhom);
+                    tk.setTen(ten);
+                    tk.setSDT(sdt);
+                    tk.setEmail(email);
+                    ds_nguoidung.add(tk);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CauHinhPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public Rectangle CreateIcon(int width, int height, String path)
+    {
+        Rectangle rec = new Rectangle(width,height);
+        rec.getStyleClass().add("icon");
+        Image img = new Image(path);
+        ImagePattern imgpn = new ImagePattern(img);
+        rec.setFill(imgpn);
+        return rec;
+    }
+    public void XoaNguoiDung(TaiKhoan taikhoan)
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác nhận");
+        alert.setHeaderText(null);
+        alert.setContentText("Bạn chắc chắn muốn xoá Đơn thuốc "+taikhoan.getUser_id()+"?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() == ButtonType.OK)
+        {
+            ds_nguoidung.remove(taikhoan);
+            sql = "DELETE FROM Tai_Khoan WHERE user_id='"+taikhoan.getUser_id()+"';";
+            conn.update(sql);
+        }
+    }
 }

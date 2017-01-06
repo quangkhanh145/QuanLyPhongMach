@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
  *
  * @author Quang Khanh
  */
-public class DSDonThuoc {
+public class DonThuoc {
     private SimpleStringProperty Ma_Don_Thuoc;
     private SimpleStringProperty Ten_Benh_Nhan;
     private int Tuoi;
@@ -20,7 +20,7 @@ public class DSDonThuoc {
     private SimpleStringProperty Nguoi_Lap;
     private SimpleStringProperty Ngay_Lap;
 
-    public DSDonThuoc() {
+    public DonThuoc() {
         this.Ma_Don_Thuoc = new SimpleStringProperty("");
         this.Ten_Benh_Nhan = new SimpleStringProperty("");
         this.Tuoi = 0;

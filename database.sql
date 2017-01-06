@@ -36,14 +36,14 @@ INSERT INTO `Nhom` VALUES
 /*===================bảng tài khoản===========================*/
 CREATE TABLE `Tai_Khoan`
 (
-	`Id` VARCHAR(5) NOT NULL DEFAULT '0',
+	`user_id` VARCHAR(5) NOT NULL DEFAULT '0',
 	`Ten_Dang_Nhap` VARCHAR(20) NOT NULL,
 	`Mat_Khau` VARCHAR(15) NOT NULL,
 	`Nhom` VARCHAR(30),
 	`Ten` VARCHAR(30) NOT NULL,
 	`SDT` VARCHAR(12),
 	`Email` VARCHAR(30),
-	PRIMARY KEY(`Id`),
+	PRIMARY KEY(`user_id`),
 	UNIQUE(`Ten_Dang_Nhap`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -51,14 +51,14 @@ CREATE TABLE `Tai_Khoan_seq`
 (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
 );
-/*===================Trigger tự động tăng id cho đơn thuốc===========================*/
+/*===================Trigger tự động tăng id cho tài khoản===========================*/
 DELIMITER $$
 CREATE TRIGGER `Tai_Khoan_insert`
 BEFORE INSERT ON `Tai_Khoan`
 FOR EACH ROW
 BEGIN
   INSERT INTO `Tai_Khoan_seq` VALUES (NULL);
-  SET NEW.Id = CONCAT('TK', LPAD(LAST_INSERT_ID(), 3, '0'));
+  SET NEW.user_id = CONCAT('TK', LPAD(LAST_INSERT_ID(), 3, '0'));
 END$$
 DELIMITER ;
 /*===============================================================*/
@@ -138,10 +138,10 @@ CREATE TABLE `Chi_Tiet_Don_Thuoc`
 	`Ma_Thuoc` VARCHAR(20) NOT NULL,
 	`So_Luong` INT UNSIGNED,
 	`Gia_Ban` DOUBLE UNSIGNED,
-	`Cach_Dung` VARCHAR(100),
 	PRIMARY KEY(`Ma_Don_Thuoc`,`Ma_Thuoc`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*===============================================================*/
+
 /*===================bảng Diễn tiến bệnh===========================*/
 CREATE TABLE `Dien_Tien_Benh`
 (
@@ -151,6 +151,21 @@ CREATE TABLE `Dien_Tien_Benh`
 	`NgayKham` DATE,
 	PRIMARY KEY(`Ma`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `Dien_Tien_Benh_seq`
+(
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+/*===============================================================*/
+/*===================Trigger tự động tăng id cho Diễn tiến bệnh===========================*/
+DELIMITER $$
+CREATE TRIGGER `Dien_Tien_Benh_insert`
+BEFORE INSERT ON `Dien_Tien_Benh`
+FOR EACH ROW
+BEGIN
+  INSERT INTO `Dien_Tien_Benh_seq` VALUES (NULL);
+  SET NEW.Ma = CONCAT('DTB', LPAD(LAST_INSERT_ID(), 10, '0'));
+END$$
+DELIMITER ;
 /*===============================================================*/
 /*===================bảng thuốc===========================*/
 
@@ -176,14 +191,16 @@ INSERT INTO `Thuoc` VALUES ("TH00000283","PARA ngọt 900 mg chia 4", "Gói","10
 /*===================bảng dịch vụ===========================*/
 CREATE TABLE `Dich_Vu`
 (
-	`Ma_DV` VARCHAR(20) NOT NULL,
-	`Ten_DV` VARCHAR(30) NOT NULL,
-	`Don_Vi` VARCHAR(15),
-	`Don_Gia` FLOAT UNSIGNED,
-	`So_Luong_Mac_Dinh` INT UNSIGNED,
+	`Ma_DV` INT NOT NULL AUTO_INCREMENT,
+	`Ten_DV` VARCHAR(50) NOT NULL,
+	`Don_Gia` DOUBLE UNSIGNED,
 	`Mo_Ta`  VARCHAR(100),
 	`Nhom` VARCHAR(30),
 	PRIMARY KEY(`Ma_DV`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*===============================================================*/
+INSERT INTO `Dich_Vu`(Ten_DV, Don_Gia, Mo_Ta, Nhom) VALUES
+('Khám sức khoẻ tổng quát định kỳ','90000','Khám sức khoẻ tổng quát định kỳ',''),
+('Khám bệnh thông thường','70000','Khám bệnh thông thường',''),
+('Khám tư vấn Bác sỹ','20000','Khám tư vấn Bác sỹ','');
